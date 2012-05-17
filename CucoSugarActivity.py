@@ -1,0 +1,81 @@
+#Copyright (c) 12 Walter Bender
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
+
+
+import gtk
+import gobject
+
+from sugar.activity import activity
+from sugar import profile
+from sugar.graphics.toolbarbox import ToolbarBox
+from sugar.activity.widgets import ActivityToolbarButton
+from sugar.graphics.toolbarbox import ToolbarButton
+from sugar.activity.widgets import StopButton
+from sugar.graphics.alert import NotifyAlert
+from sugar.graphics.objectchooser import ObjectChooser
+from sugar.datastore import datastore
+from sugar import mime
+
+from gettext import gettext as _
+
+from game import Game
+from toolbar_utils import separator_factory
+
+import logging
+_logger = logging.getLogger('cuco-activity')
+
+
+class CucoSugarActivity(activity.Activity):
+    """ Simplified Cuco activity rewritten in Python """
+
+    def __init__(self, handle):
+        """ Initialize the toolbars and the game board """
+        super(CucoSugarActivity, self).__init__(handle)
+
+        self.path = activity.get_bundle_path()
+
+        self._setup_toolbars()
+
+        # Create a canvas
+        canvas = gtk.DrawingArea()
+        canvas.set_size_request(gtk.gdk.screen_width(), \
+                                gtk.gdk.screen_height())
+        self.set_canvas(canvas)
+        canvas.show()
+        self.show_all()
+
+        self._game = Game(canvas, parent=self, path=self.path)
+        self.fullscreen()
+        gobject.timeout_add(1000, self._game.new_game, True)
+
+    def _setup_toolbars(self):
+        """ Setup the toolbars. """
+
+        self.max_participants = 1  # No collaboration
+
+        toolbox = ToolbarBox()
+
+        # Activity toolbar
+        activity_button = ActivityToolbarButton(self)
+
+        toolbox.toolbar.insert(activity_button, 0)
+        activity_button.show()
+
+        self.set_toolbar_box(toolbox)
+        toolbox.show()
+        self.toolbar = toolbox.toolbar
+
+        separator_factory(toolbox.toolbar, True, False)
+
+        stop_button = StopButton(self)
+        stop_button.props.accelerator = '<Ctrl>q'
+        toolbox.toolbar.insert(stop_button, -1)
+        stop_button.show()
