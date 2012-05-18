@@ -10,7 +10,6 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-
 import gtk
 import gobject
 import cairo
@@ -35,17 +34,39 @@ from play_audio import play_audio_from_file
 CUCO_LAYER = 2
 PANEL_LAYER = 1
 BG_LAYER = 0
-LABELS = [_('Move the mouse to the Cuco'),
+LABELS = [_('Move the mouse to the Cuco.'),
           _('Click on the Cuco with the left button.'),
           _('Click on the Cucos with the left button.'),
           _('Click and drag the Cucos to the right.'),
-          _('Type the letter on the Cuco'),
-          _('Write the word formed by the Cucos. For exclamation points and capital letters have to use the SHIFT key')]
-ALERTS = [_('Press ENTER to confirm'),
-          _('Press DELETE to delete all text '),
-          _('Prees the CLEAR key to clear what is wrong')]
+          _('Type the letter on the Cuco.'),
+          _('Use the SHIFT key for capital letters.'),
+          _('Type the letters on the Cuco in word order.')]
+ALERTS = [_('Press ENTER to confirm.'),
+          _('Press DELETE to delete text.')]
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-#    u'ÑñáéíóúÁÉÍÓÚ'
+MSGS = [_('Hello Cuco'), _('Cucos are not real.')]
+NOISE_KEYS = ['Shift_L', 'Shift_R', 'Control_L', 'Caps_Lock', 'Pause',
+              'Alt_L', 'Alt_R', 'KP_Enter', 'ISO_Level3_Shift', 'KP_Divide',
+              'Escape', 'Return', 'KP_Page_Up', 'Up', 'Down', 'Menu',
+              'Left', 'Right', 'KP_Home', 'KP_End', 'KP_Up', 'Super_L',
+              'KP_Down', 'KP_Left', 'KP_Right', 'KP_Page_Down', 'Scroll_Lock',
+              'Page_Down', 'Page_Up']
+WHITE_SPACE = ['space', 'Tab']
+PUNCTUATION = {'period':'.', 'comma':',', 'question':'?', 'exclam':'!'}
+DEAD_KEYS = ['grave', 'acute', 'circumflex', 'tilde', 'diaeresis', 'abovering']
+DEAD_DICTS = [{'A': 192, 'E': 200, 'I': 204, 'O': 210, 'U': 217, 'a': 224,
+               'e': 232, 'i': 236, 'o': 242, 'u': 249},
+              {'A': u'Á', 'E': u'É', 'I': u'Í', 'O': u'Ó', 'U': u'Ú',
+               'a': u'á', 'e': u'é', 'i': u'í', 'o': u'ó', 'u': u'ú'},
+              {'A': 194, 'E': 202, 'I': 206, 'O': 212, 'U': 219, 'a': 226,
+               'e': 234, 'i': 238, 'o': 244, 'u': 251},
+              {'A': 195, 'O': 211, 'N': u'Ñ', 'U': 360, 'a': 227, 'o': 245,
+               'n': u'ñ', 'u': 361},
+              {'A': 196, 'E': 203, 'I': 207, 'O': 211, 'U': 218, 'a': 228,
+               'e': 235, 'i': 239, 'o': 245, 'u': 252},
+              {'A': 197, 'a': 229}]
+
+#TODO: Add deadkey support
 
 class Game():
 
@@ -78,6 +99,9 @@ class Game():
         self._timeout_id = None
         self._press = None
         self._clicked = False
+        self._dead_key = ''
+        self._waiting_for_delete = False
+        self._waiting_for_enter = False
 
         self.level = 0
         self.pause = 200
@@ -85,8 +109,9 @@ class Game():
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
 
-        self._BG = ['background0.jpg', 'background1.jpg', 'background2.jpg',
-                    'background3.jpg', 'background4.jpg']
+        self._BG = ['background0.jpg', 'background0.jpg', 'background0.jpg',
+                    'background1.jpg', 'background2.jpg', 'background2.jpg',
+                    'background2.jpg']
         self._backgrounds = []
         for bg in self._BG:
             self._backgrounds.append(Sprite(
@@ -103,6 +128,7 @@ class Game():
                 int(720 * self._scale), int(370 * self._scale)))
         self._panel.type = 'panel'
         self._panel.set_label(LABELS[0])
+        self._panel.set_label_attributes(20)
         self._panel.hide()
         
         self._CUCOS = glob.glob(
@@ -149,11 +175,10 @@ class Game():
             self._MEN[0], int(258 * self._scale), int(208 * self._scale))
         self._ghost_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
             self._GHOSTS[0], int(258 * self._scale), int(208 * self._scale))
-        for i in range(10):
+        for i in range(len(MSGS[1])):  # Check re i18n
             self._sticky_cards.append(Sprite(self._sprites, 0, 0,
                                              self._cuco_pixbuf))
             self._sticky_cards[-1].type = 'cuco'
-            self._sticky_cards[-1].set_label_color('white')
             self._sticky_cards[-1].set_label_attributes(24,
                                                         vert_align='bottom')
 
@@ -172,6 +197,7 @@ class Game():
         for p in self._sticky_cards:
             p.set_shape(self._cuco_pixbuf)
             p.set_label('')
+            p.set_label_color('white')
             p.hide()
         self._backgrounds[self.level].set_layer(BG_LAYER)
 
@@ -180,10 +206,10 @@ class Game():
         self._first_time = first_time
         self._clicked = False
 
-        if self._counter > 1: # 9
+        if (self.level == 6 and self._counter == len(MSGS)) or \
+           self._counter > 5:
             self._first_time = True
             self.level += 1
-            _logger.debug('beginning level %d' % (self.level))
             self._counter = 0
             self._correct = 0
             self._pause = 200
@@ -218,21 +244,48 @@ class Game():
         elif self.level == 3:
             # Place some Cucos on the left-side of the canvas
             for i in range(self._counter + 1):
-                self._cuco_quadrant += int(uniform(2, 4))
+                self._cuco_quadrant = int(uniform(2, 4))
                 x, y = self._quad_to_xy(self._cuco_quadrant)
                 self._sticky_cards[i].move((x, y))
                 self._sticky_cards[i].type = 'cuco'
                 self._sticky_cards[i].set_layer(CUCO_LAYER)
         elif self.level == 4:
             # Place some Cucos on the canvas with letters as labels
+            # Just lowercase
             for i in range(self._counter + 1):
-                self._cuco_quadrant += int(uniform(0, 4))
+                self._cuco_quadrant = int(uniform(0, 4))
+                x, y = self._quad_to_xy(self._cuco_quadrant)
+                self._sticky_cards[i].move((x, y))
+                self._sticky_cards[i].type = 'cuco'
+                self._sticky_cards[i].set_layer(CUCO_LAYER)
+                self._sticky_cards[i].set_label(
+                    ALPHABET[int(uniform(26, len(ALPHABET)))])
+        elif self.level == 5:
+            # Place some Cucos on the canvas with letters as labels
+            # Mixed case
+            for i in range(self._counter + 1):
+                self._cuco_quadrant = int(uniform(0, 4))
                 x, y = self._quad_to_xy(self._cuco_quadrant)
                 self._sticky_cards[i].move((x, y))
                 self._sticky_cards[i].type = 'cuco'
                 self._sticky_cards[i].set_layer(CUCO_LAYER)
                 self._sticky_cards[i].set_label(
                     ALPHABET[int(uniform(0, len(ALPHABET)))])
+        elif self.level == 6:
+            x = 0
+            y = 0
+            c = 0
+            for i in range(len(MSGS[self._counter])):
+                if MSGS[self._counter][i] == ' ':
+                    y += self._cuco_dim[1]
+                    x = 0
+                else:
+                    self._sticky_cards[c].move((x, y))   
+                    self._sticky_cards[c].type = i
+                    self._sticky_cards[c].set_layer(CUCO_LAYER)
+                    self._sticky_cards[c].set_label(MSGS[self._counter][i])
+                    c += 1
+                    x += int(self._cuco_dim[0] / 2.)
 
         if self.level in [0, 1]:
             self._cuco_quadrant += int(uniform(1, 4))
@@ -253,8 +306,8 @@ class Game():
         return x, y
 
     def _taunt(self, x, y, i):
-        if i == 0:
-            play_audio_from_file(self, os.path.join(
+        if i == 2:
+            gobject.idle_add(play_audio_from_file, self, os.path.join(
                     self._path, 'sounds', 'taunt.ogg'))
 
         self._taunt_cards[(i + 1)%2].hide()
@@ -301,19 +354,96 @@ class Game():
 
     def _keypress_cb(self, area, event):
         ''' Keypress '''
+        # Games 4, 5, and 6 use the keyboard
+        if self.level not in [4, 5, 6]:
+            return True
         k = gtk.gdk.keyval_name(event.keyval)
         u = gtk.gdk.keyval_to_unicode(event.keyval)
-        for i in range(self._counter + 1):
-            if self._sticky_cards[i].labels[0] == k:
-                self._sticky_cards[i].set_label('')
-        for i in range(self._counter + 1):
-            if len(self._sticky_cards[i].labels[0]) > 0:
+
+        if self._waiting_for_enter:
+            if k == 'Return':
+                self._waiting_for_enter = False
+                self._panel.hide()
+                self._counter += 1
+                self._correct = 0
+                gobject.timeout_add(1000, self.new_game, False)
+            return
+
+        if k in NOISE_KEYS or k in WHITE_SPACE:
+            return True
+
+        if self.level == 6 and self._waiting_for_delete:
+            if k in ['BackSpace', 'Delete']:
+                self._waiting_for_delete = False
+                self._sticky_cards[self._correct].set_label_color('white')
+                self._sticky_cards[self._correct].set_label(
+                    MSGS[self._counter][
+                        self._sticky_cards[self._correct].type])
+                self._panel.hide()
+                self._panel.set_label_color('black')
+            return
+
+        if k[0:5] == 'dead_':
+            self._dead_key == keyname
+            return
+        if self._dead_key is not '':
+            k = DEAD_DICTS[DEAD_KEYS.index(self.dead_key[5:])][k]
+            self._dead_key = ''
+
+        if self.level == 6:
+            n = len(MSGS[self._counter])
+        else:
+            n = self._counter + 1
+
+        if self.level == 6:
+            i = self._correct
+            if k in PUNCTUATION:
+                k = PUNCTUATION[k]
+            elif len(k) > 1:
                 return True
+            if self._sticky_cards[i].labels[0] == k:
+                self._sticky_cards[i].set_label_color('blue')
+                self._sticky_cards[i].set_label(k)
+                self._correct += 1
+            else:
+                self._sticky_cards[i].set_label_color('red')
+                self._sticky_cards[i].set_label(k)
+                self._panel.set_label_color('red')
+                self._panel.set_label(ALERTS[1])
+                self._panel.set_layer(PANEL_LAYER)
+                self._waiting_for_delete = True
+        else:
+            for i in range(n):
+                if self._sticky_cards[i].labels[0] == k:
+                    self._sticky_cards[i].set_label('')
+                    break
+
+        # Test for end condition
+        if self.level == 6 and \
+           self._correct == len(MSGS[self._counter]) - \
+                            MSGS[self._counter].count(' '):
+            c = 0
+            for i in range(len(MSGS[self._counter])):
+                if MSGS[self._counter][i] == ' ':
+                    continue
+                elif MSGS[self._counter][i] != self._sticky_cards[c].labels[0]:
+                    return True
+                c += 1
+            self._panel.set_label(ALERTS[0])
+            self._panel.set_layer(PANEL_LAYER)
+            self._waiting_for_enter = True
+            return
+        else:
+            for i in range(n):
+                if len(self._sticky_cards[i].labels[0]) > 0:
+                    return True
         self._counter += 1
+        self._correct = 0
         gobject.timeout_add(1000, self.new_game, False)
 
     def _mouse_move_cb(self, win, event):
         ''' Move the mouse. '''
+        # Games 0, 3, 4, and 5 use move events
         win.grab_focus()
         x, y = map(int, event.get_coords())
         self._panel.hide()
@@ -333,6 +463,15 @@ class Game():
                 self._correct += 1
                 self._counter += 1
                 gobject.timeout_add(1000, self.new_game, False)
+        elif self.level in [4, 5]:
+            # For Game 4 and 5, we allow dragging
+            if self._press is None:
+                self._drag_pos = [0, 0]
+                return True
+            dx = x - self._drag_pos[0]
+            dy = y - self._drag_pos[1]
+            self._press.move_relative((dx, dy))
+            self._drag_pos = [x, y]
         elif self.level == 3:
             # For Game 3, we are dragging
             if self._press is None:
@@ -350,6 +489,7 @@ class Game():
         return True
 
     def _button_release_cb(self, win, event):
+        # Game 3 uses release
         if self.level == 3:
             # Move to release
             if self._correct == self._counter + 1:
@@ -373,12 +513,12 @@ class Game():
         if spr.type != 'cuco':
             self._correct = 0
             return
-        if self._timeout_id is None:
+        if self.level < 3 and self._timeout_id is None:
             return
         if self._clicked:
             return
 
-        # For Game 1, click on the Cuco
+        # Games 1, 2, and 3 involve clicks; Games 4 and 5 allow click to drag
         if self.level == 1:
             self._all_clear()
             self._man_cards[0].move((x - int(self._cuco_dim[0] / 2.),
@@ -398,7 +538,8 @@ class Game():
                 self._counter += 1
                 self._correct = 0
                 gobject.timeout_add(2000, self.new_game, False)
-        elif self.level == 3:
+        elif self.level in [3, 4, 5]:
+            # In Games 4 and 5, dragging is used to remove overlaps
             self._press = spr
             self._drag_pos = [x, y]
         return True
