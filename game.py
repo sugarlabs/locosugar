@@ -30,7 +30,7 @@ except ImportError:
     GRID_CELL_SIZE = 0
 
 from sprites import Sprites, Sprite
-
+from play_audio import play_audio_from_file
 
 CUCO_LAYER = 2
 PANEL_LAYER = 1
@@ -39,12 +39,13 @@ LABELS = [_('Move the mouse to the Cuco'),
           _('Click on the Cuco with the left button.'),
           _('Click on the Cucos with the left button.'),
           _('Click and drag the Cucos to the right.'),
-          _('Press the key to lock the Cucos'),
+          _('Type the letter on the Cuco'),
           _('Write the word formed by the Cucos. For exclamation points and capital letters have to use the SHIFT key')]
 ALERTS = [_('Press ENTER to confirm'),
           _('Press DELETE to delete all text '),
           _('Prees the CLEAR key to clear what is wrong')]
-
+ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+#    u'ÑñáéíóúÁÉÍÓÚ'
 
 class Game():
 
@@ -86,10 +87,6 @@ class Game():
 
         self._BG = ['background0.jpg', 'background1.jpg', 'background2.jpg',
                     'background3.jpg', 'background4.jpg']
-        '''
-        self._BG = glob.glob(
-                os.path.join(self._path, 'images', 'background*.jpg'))
-        '''
         self._backgrounds = []
         for bg in self._BG:
             self._backgrounds.append(Sprite(
@@ -157,6 +154,8 @@ class Game():
                                              self._cuco_pixbuf))
             self._sticky_cards[-1].type = 'cuco'
             self._sticky_cards[-1].set_label_color('white')
+            self._sticky_cards[-1].set_label_attributes(24,
+                                                        vert_align='bottom')
 
         self._all_clear()
 
@@ -172,6 +171,7 @@ class Game():
             p.hide()
         for p in self._sticky_cards:
             p.set_shape(self._cuco_pixbuf)
+            p.set_label('')
             p.hide()
         self._backgrounds[self.level].set_layer(BG_LAYER)
 
@@ -223,6 +223,16 @@ class Game():
                 self._sticky_cards[i].move((x, y))
                 self._sticky_cards[i].type = 'cuco'
                 self._sticky_cards[i].set_layer(CUCO_LAYER)
+        elif self.level == 4:
+            # Place some Cucos on the canvas with letters as labels
+            for i in range(self._counter + 1):
+                self._cuco_quadrant += int(uniform(0, 4))
+                x, y = self._quad_to_xy(self._cuco_quadrant)
+                self._sticky_cards[i].move((x, y))
+                self._sticky_cards[i].type = 'cuco'
+                self._sticky_cards[i].set_layer(CUCO_LAYER)
+                self._sticky_cards[i].set_label(
+                    ALPHABET[int(uniform(0, len(ALPHABET)))])
 
         if self.level in [0, 1]:
             self._cuco_quadrant += int(uniform(1, 4))
@@ -243,6 +253,10 @@ class Game():
         return x, y
 
     def _taunt(self, x, y, i):
+        if i == 0:
+            play_audio_from_file(self, os.path.join(
+                    self._path, 'sounds', 'taunt.ogg'))
+
         self._taunt_cards[(i + 1)%2].hide()
         if self._clicked:
             self._timeout_id = None
@@ -289,6 +303,14 @@ class Game():
         ''' Keypress '''
         k = gtk.gdk.keyval_name(event.keyval)
         u = gtk.gdk.keyval_to_unicode(event.keyval)
+        for i in range(self._counter + 1):
+            if self._sticky_cards[i].labels[0] == k:
+                self._sticky_cards[i].set_label('')
+        for i in range(self._counter + 1):
+            if len(self._sticky_cards[i].labels[0]) > 0:
+                return True
+        self._counter += 1
+        gobject.timeout_add(1000, self.new_game, False)
 
     def _mouse_move_cb(self, win, event):
         ''' Move the mouse. '''
