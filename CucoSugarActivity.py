@@ -1,4 +1,4 @@
-#Copyright (c) 12 Walter Bender
+#Copyright (c) 2012 Walter Bender
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,24 +27,23 @@ from sugar import mime
 from gettext import gettext as _
 
 from game import Game
-from toolbar_utils import separator_factory
+from toolbar_utils import separator_factory, label_factory
 
 import logging
 _logger = logging.getLogger('cuco-activity')
 
 
 class CucoSugarActivity(activity.Activity):
-    """ Simplified Cuco activity rewritten in Python """
+    ''' Simplified Cuco activity rewritten in Python '''
 
     def __init__(self, handle):
-        """ Initialize the toolbars and the game board """
+        ''' Initialize the toolbars and the game board '''
         super(CucoSugarActivity, self).__init__(handle)
 
         self.path = activity.get_bundle_path()
 
         self._setup_toolbars()
 
-        # Create a canvas
         canvas = gtk.DrawingArea()
         canvas.set_size_request(gtk.gdk.screen_width(), \
                                 gtk.gdk.screen_height())
@@ -53,17 +52,20 @@ class CucoSugarActivity(activity.Activity):
         self.show_all()
 
         self._game = Game(canvas, parent=self, path=self.path)
+        if 'level' in self.metadata:
+            self._game.level = int(self.metadata['level'])
+        if 'score' in self.metadata:
+            self._game.score = int(self.metadata['score'])
         self.fullscreen()
         gobject.timeout_add(1000, self._game.new_game, True)
 
     def _setup_toolbars(self):
-        """ Setup the toolbars. """
+        ''' Setup the toolbars. '''
 
         self.max_participants = 1  # No collaboration
 
         toolbox = ToolbarBox()
 
-        # Activity toolbar
         activity_button = ActivityToolbarButton(self)
 
         toolbox.toolbar.insert(activity_button, 0)
@@ -73,9 +75,17 @@ class CucoSugarActivity(activity.Activity):
         toolbox.show()
         self.toolbar = toolbox.toolbar
 
+        self.timer_label = label_factory(self.toolbar, '')
+
         separator_factory(toolbox.toolbar, True, False)
 
         stop_button = StopButton(self)
         stop_button.props.accelerator = '<Ctrl>q'
         toolbox.toolbar.insert(stop_button, -1)
         stop_button.show()
+
+    def write_file(self, file_path):
+        ''' Save the play level '''
+        if hasattr(self, '_game'):
+            self.metadata['level'] = str(self._game.level)
+            self.metadata['score'] = str(self._game.score)

@@ -97,14 +97,16 @@ class Game():
         self._counter = 0
         self._correct = 0
         self._timeout_id = None
+        self._pause = 200
         self._press = None
         self._clicked = False
         self._dead_key = ''
         self._waiting_for_delete = False
         self._waiting_for_enter = False
-
+        self._seconds = 0
+        self._timer_id = None
         self.level = 0
-        self.pause = 200
+        self.score = 0
 
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
@@ -184,6 +186,20 @@ class Game():
 
         self._all_clear()
 
+    def _time_increment(self):
+        ''' Track seconds since start_time. '''
+        self._seconds = int(gobject.get_current_time() - self._start_time)
+        self.timer_id = gobject.timeout_add(1000, self._time_increment)
+
+    def _timer_reset(self):
+        ''' Reset the timer for each level '''
+        self._start_time = gobject.get_current_time()
+        if self._timer_id is not None:
+            gobject.source_remove(self._timer_id)
+            self._timer_id = None
+        self.score += self._seconds
+        self._time_increment()
+
     def _all_clear(self):
         ''' Things to reinitialize when starting up a new game. '''
         for p in self._cuco_cards:
@@ -202,10 +218,11 @@ class Game():
         self._backgrounds[self.level].set_layer(BG_LAYER)
 
     def new_game(self, first_time):
-        ''' Start a new game. '''
+        ''' Start a new game at the current level. '''
         self._first_time = first_time
         self._clicked = False
 
+        # It may be time to advance to the next level.
         if (self.level == 6 and self._counter == len(MSGS)) or \
            self._counter > 5:
             self._first_time = True
@@ -213,8 +230,11 @@ class Game():
             self._counter = 0
             self._correct = 0
             self._pause = 200
+            self._parent.timer_label.set_text(
+                '%d:%02d' % (int(self.score / 60.), self.score % 60))
             if self.level == len(self._backgrounds):
                 self.level = 0
+                self.score = 0
                 self._parent.unfullscreen()
 
         self._all_clear()
@@ -224,6 +244,7 @@ class Game():
             # The panel disappears on mouse movement
             self._panel.set_label(LABELS[self.level])
             self._panel.set_layer(PANEL_LAYER)
+            self._timer_reset()
 
         if self.level == 0:
             # Choose a random location for the Cuco
@@ -293,7 +314,7 @@ class Game():
             x, y = self._quad_to_xy(self._cuco_quadrant)
             if self.level == 0:
                 self._move_cuco(x, y, 0)
-            elif self.level == 1:
+            else:
                 self._taunt(x, y, 0)
 
     def _quad_to_xy(self, q):
@@ -306,7 +327,7 @@ class Game():
         return x, y
 
     def _taunt(self, x, y, i):
-        if i == 2:
+        if i == 0:
             gobject.idle_add(play_audio_from_file, self, os.path.join(
                     self._path, 'sounds', 'taunt.ogg'))
 
@@ -333,8 +354,8 @@ class Game():
             self._man_cards[0].move((x, y))
             self._man_cards[0].set_layer(CUCO_LAYER)
             self._timeout_id = None
-            if self.pause > 50:
-                self.pause -= 10
+            if self._pause > 50:
+                self._pause -= 10
             return True
         else:
             if dx > 0:
@@ -350,7 +371,7 @@ class Game():
             self._cuco_cards[j].set_layer(CUCO_LAYER)
             self._cuco_cards[i].hide()
             self._timeout_id = gobject.timeout_add(
-                self.pause, self._move_cuco, x, y, j)
+                self._pause, self._move_cuco, x, y, j)
 
     def _keypress_cb(self, area, event):
         ''' Keypress '''
@@ -412,6 +433,8 @@ class Game():
                 self._panel.set_label(ALERTS[1])
                 self._panel.set_layer(PANEL_LAYER)
                 self._waiting_for_delete = True
+                gobject.idle_add(play_audio_from_file, self, os.path.join(
+                        self._path, 'sounds', 'error.ogg'))
         else:
             for i in range(n):
                 if self._sticky_cards[i].labels[0] == k:
@@ -446,7 +469,8 @@ class Game():
         # Games 0, 3, 4, and 5 use move events
         win.grab_focus()
         x, y = map(int, event.get_coords())
-        self._panel.hide()
+        if self._seconds > 1:
+            self._panel.hide()
         if not self._clicked and self.level == 0:
             # For Game 0, see if the mouse is on the Cuco
             dx = x - self._cuco_pos[0] - self._cuco_dim[0] / 2.
@@ -507,13 +531,11 @@ class Game():
         if self.level == 0:
             return
         spr = self._sprites.find_sprite((x, y))
-        if spr == None:
-            self._correct = 0
+        if spr is None:
             return
         if spr.type != 'cuco':
-            self._correct = 0
             return
-        if self.level < 3 and self._timeout_id is None:
+        if self.level < 2 and self._timeout_id is None:
             return
         if self._clicked:
             return
@@ -533,11 +555,12 @@ class Game():
         elif self.level == 2:
             spr.set_shape(self._ghost_pixbuf)
             spr.type = 'ghost'
-            self._correct += 1
-            if self._correct == self._counter + 1:
+            if self._correct == self._counter:
                 self._counter += 1
                 self._correct = 0
                 gobject.timeout_add(2000, self.new_game, False)
+            else:
+                self._correct += 1
         elif self.level in [3, 4, 5]:
             # In Games 4 and 5, dragging is used to remove overlaps
             self._press = spr
