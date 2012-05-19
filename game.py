@@ -52,7 +52,7 @@ NOISE_KEYS = ['Shift_L', 'Shift_R', 'Control_L', 'Caps_Lock', 'Pause',
               'KP_Down', 'KP_Left', 'KP_Right', 'KP_Page_Down', 'Scroll_Lock',
               'Page_Down', 'Page_Up']
 WHITE_SPACE = ['space', 'Tab']
-PUNCTUATION = {'period':'.', 'comma':',', 'question':'?', 'exclam':'!'}
+PUNCTUATION = {'period': '.', 'comma': ',', 'question': '?', 'exclam': '!'}
 DEAD_KEYS = ['grave', 'acute', 'circumflex', 'tilde', 'diaeresis', 'abovering']
 DEAD_DICTS = [{'A': 192, 'E': 200, 'I': 204, 'O': 210, 'U': 217, 'a': 224,
                'e': 232, 'i': 236, 'o': 242, 'u': 249},
@@ -66,7 +66,6 @@ DEAD_DICTS = [{'A': 192, 'E': 200, 'I': 204, 'O': 210, 'U': 217, 'a': 224,
                'e': 235, 'i': 239, 'o': 245, 'u': 252},
               {'A': 197, 'a': 229}]
 
-#TODO: Add deadkey support
 
 class Game():
 
@@ -132,7 +131,7 @@ class Game():
         self._panel.set_label(LABELS[0])
         self._panel.set_label_attributes(20)
         self._panel.hide()
-        
+
         self._CUCOS = glob.glob(
                 os.path.join(self._path, 'images', 'cuco*.png'))
         self._cuco_cards = []
@@ -301,7 +300,7 @@ class Game():
                     y += self._cuco_dim[1]
                     x = 0
                 else:
-                    self._sticky_cards[c].move((x, y))   
+                    self._sticky_cards[c].move((x, y))
                     self._sticky_cards[c].type = i
                     self._sticky_cards[c].set_layer(CUCO_LAYER)
                     self._sticky_cards[c].set_label(MSGS[self._counter][i])
@@ -331,17 +330,20 @@ class Game():
             gobject.idle_add(play_audio_from_file, self, os.path.join(
                     self._path, 'sounds', 'taunt.ogg'))
 
-        self._taunt_cards[(i + 1)%2].hide()
+        self._taunt_cards[(i + 1) % 2].hide()
         if self._clicked:
             self._timeout_id = None
             return True
         else:
-            self._taunt_cards[i%2].move((x, y))
-            self._taunt_cards[i%2].set_layer(CUCO_LAYER)
+            self._taunt_cards[i % 2].move((x, y))
+            self._taunt_cards[i % 2].set_layer(CUCO_LAYER)
             self._timeout_id = gobject.timeout_add(
                 200, self._taunt, x, y, i + 1)
 
     def _move_cuco(self, x, y, i):
+        if i == 0:
+            gobject.idle_add(play_audio_from_file, self, os.path.join(
+                    self._path, 'sounds', 'move.ogg'))
         j = (i + 1) % len(self._cuco_cards)
         cx, cy = self._cuco_cards[i].get_xy()
         dx = cx - x
