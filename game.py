@@ -29,7 +29,7 @@ except ImportError:
     GRID_CELL_SIZE = 0
 
 from sprites import Sprites, Sprite
-from play_audio import play_audio_from_file
+# from play_audio import play_audio_from_file
 
 CUCO_LAYER = 2
 PANEL_LAYER = 1
@@ -326,9 +326,11 @@ class Game():
         return x, y
 
     def _taunt(self, x, y, i):
+        '''
         if i == 0:
             gobject.idle_add(play_audio_from_file, self, os.path.join(
                     self._path, 'sounds', 'taunt.ogg'))
+        '''
 
         self._taunt_cards[(i + 1) % 2].hide()
         if self._clicked:
@@ -341,9 +343,6 @@ class Game():
                 200, self._taunt, x, y, i + 1)
 
     def _move_cuco(self, x, y, i):
-        if i == 0:
-            gobject.idle_add(play_audio_from_file, self, os.path.join(
-                    self._path, 'sounds', 'move.ogg'))
         j = (i + 1) % len(self._cuco_cards)
         cx, cy = self._cuco_cards[i].get_xy()
         dx = cx - x
@@ -435,8 +434,10 @@ class Game():
                 self._panel.set_label(ALERTS[1])
                 self._panel.set_layer(PANEL_LAYER)
                 self._waiting_for_delete = True
+                '''
                 gobject.idle_add(play_audio_from_file, self, os.path.join(
                         self._path, 'sounds', 'error.ogg'))
+                '''
         else:
             for i in range(n):
                 if self._sticky_cards[i].labels[0] == k:
