@@ -29,7 +29,7 @@ except ImportError:
     GRID_CELL_SIZE = 0
 
 from sprites import Sprites, Sprite
-# from play_audio import play_audio_from_file
+from play_audio import play_audio_from_file
 
 CUCO_LAYER = 2
 PANEL_LAYER = 1
@@ -52,19 +52,22 @@ NOISE_KEYS = ['Shift_L', 'Shift_R', 'Control_L', 'Caps_Lock', 'Pause',
               'KP_Down', 'KP_Left', 'KP_Right', 'KP_Page_Down', 'Scroll_Lock',
               'Page_Down', 'Page_Up']
 WHITE_SPACE = ['space', 'Tab']
-PUNCTUATION = {'period': '.', 'comma': ',', 'question': '?', 'exclam': '!'}
+PUNCTUATION = {'period': '.', 'comma': ',', 'question': '?', 'exclam': '!',
+               'colon': ':', 'semicolon': ';', 'exclamdown': '¡',
+               'questiondown': '¿'}
+SPECIAL = {'ntilde': u'ñ', 'Ntilde': u'Ñ', 'ccedilla': u'ç', 'Ccedilla': u'Ç'}
 DEAD_KEYS = ['grave', 'acute', 'circumflex', 'tilde', 'diaeresis', 'abovering']
-DEAD_DICTS = [{'A': 192, 'E': 200, 'I': 204, 'O': 210, 'U': 217, 'a': 224,
-               'e': 232, 'i': 236, 'o': 242, 'u': 249},
+DEAD_DICTS = [{'A': u'À', 'E': u'È', 'I': u'Ì', 'O': u'Ò', 'U': u'Ù',
+               'a': u'à', 'e': u'è', 'i': u'Ì', 'o': u'ò', 'u': u'ù'},
               {'A': u'Á', 'E': u'É', 'I': u'Í', 'O': u'Ó', 'U': u'Ú',
                'a': u'á', 'e': u'é', 'i': u'í', 'o': u'ó', 'u': u'ú'},
-              {'A': 194, 'E': 202, 'I': 206, 'O': 212, 'U': 219, 'a': 226,
-               'e': 234, 'i': 238, 'o': 244, 'u': 251},
-              {'A': 195, 'O': 211, 'N': u'Ñ', 'U': 360, 'a': 227, 'o': 245,
-               'n': u'ñ', 'u': 361},
-              {'A': 196, 'E': 203, 'I': 207, 'O': 211, 'U': 218, 'a': 228,
-               'e': 235, 'i': 239, 'o': 245, 'u': 252},
-              {'A': 197, 'a': 229}]
+              {'A': u'Â', 'E': u'Ê', 'I': u'Î', 'O': u'Ô', 'U': u'Û',
+               'a': u'Â',  'e': u'ê', 'i': u'î', 'o': u'ô', 'u': u'û'},
+              {'A': u'Ä', 'O': u'Õ', 'N': u'Ñ', 'U': u'Ũ',
+               'a': u'ä', 'o': u'õ', 'n': u'ñ', 'u': u'ũ'},
+              {'A': u'Ã', 'E': u'Ë', 'I': u'Ï', 'O': u'Ö', 'U': u'Ü',
+               'a': u'ã', 'e': u'ë', 'i': u'ï', 'o': u'ö', 'u': u'ü'},
+              {'A': u'Å', 'a':  u'å'}]
 
 
 class Game():
@@ -99,7 +102,7 @@ class Game():
         self._pause = 200
         self._press = None
         self._clicked = False
-        self._dead_key = ''
+        self._dead_key = None
         self._waiting_for_delete = False
         self._waiting_for_enter = False
         self._seconds = 0
@@ -216,6 +219,22 @@ class Game():
             p.hide()
         self._backgrounds[self.level].set_layer(BG_LAYER)
 
+    def _show_time(self):
+        self.level = 0
+        self._all_clear()
+        x = int(self._width / 4.)
+        y = int(self._height / 3.)
+        for i in range(len(str(self.score))):
+            self._sticky_cards[i].move((x, y))
+            self._sticky_cards[i].set_layer(CUCO_LAYER)
+            self._sticky_cards[i].set_label(str(self.score)[i])
+            x += int(self._cuco_dim[0] / 2.)
+        self.score = 0
+        self._parent.unfullscreen()
+        gobject.idle_add(play_audio_from_file, self, os.path.join(
+                self._path, 'sounds', 'end.ogg'))
+        gobject.timeout_add(5000, self.new_game, True)
+
     def new_game(self, first_time):
         ''' Start a new game at the current level. '''
         self._first_time = first_time
@@ -223,18 +242,15 @@ class Game():
 
         # It may be time to advance to the next level.
         if (self.level == 6 and self._counter == len(MSGS)) or \
-           self._counter > 5:
+           self._counter > 1: # 5:
             self._first_time = True
             self.level += 1
             self._counter = 0
             self._correct = 0
             self._pause = 200
-            self._parent.timer_label.set_text(
-                '%d:%02d' % (int(self.score / 60.), self.score % 60))
             if self.level == len(self._backgrounds):
-                self.level = 0
-                self.score = 0
-                self._parent.unfullscreen()
+                self._show_time()
+                return
 
         self._all_clear()
 
@@ -243,6 +259,8 @@ class Game():
             # The panel disappears on mouse movement
             self._panel.set_label(LABELS[self.level])
             self._panel.set_layer(PANEL_LAYER)
+            play_audio_from_file(self, os.path.join(
+                    self._path, 'sounds', 'sweetding.ogg'))
             self._timer_reset()
 
         if self.level == 0:
@@ -406,11 +424,8 @@ class Game():
             return
 
         if k[0:5] == 'dead_':
-            self._dead_key == keyname
+            self._dead_key = k[5:]
             return
-        if self._dead_key is not '':
-            k = DEAD_DICTS[DEAD_KEYS.index(self.dead_key[5:])][k]
-            self._dead_key = ''
 
         if self.level == 6:
             n = len(MSGS[self._counter])
@@ -419,8 +434,13 @@ class Game():
 
         if self.level == 6:
             i = self._correct
-            if k in PUNCTUATION:
+            if self._dead_key is not None:
+                k = DEAD_DICTS[DEAD_KEYS.index(self._dead_key)][k]
+                self._dead_key = None
+            elif k in PUNCTUATION:
                 k = PUNCTUATION[k]
+            elif k in SPECIAL:
+                k = SPECIAL[k]
             elif len(k) > 1:
                 return True
             if self._sticky_cards[i].labels[0] == k:
@@ -434,10 +454,8 @@ class Game():
                 self._panel.set_label(ALERTS[1])
                 self._panel.set_layer(PANEL_LAYER)
                 self._waiting_for_delete = True
-                '''
-                gobject.idle_add(play_audio_from_file, self, os.path.join(
+                play_audio_from_file(self, os.path.join(
                         self._path, 'sounds', 'error.ogg'))
-                '''
         else:
             for i in range(n):
                 if self._sticky_cards[i].labels[0] == k:
