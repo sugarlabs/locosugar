@@ -140,17 +140,17 @@ class Game():
         self._cuco_cards = []
         for cuco in self._CUCOS:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(258 * self._scale), int(208 * self._scale))
+                cuco, int(150 * self._scale), int(208 * self._scale))
             self._cuco_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._cuco_cards[-1].type = 'cuco'
-        self._cuco_dim = (int(258 * self._scale), int(208 * self._scale))
+        self._cuco_dim = (int(150 * self._scale), int(208 * self._scale))
 
         self._MEN = glob.glob(
                 os.path.join(self._path, 'images', 'man*.png'))
         self._man_cards = []
         for cuco in self._MEN:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(258 * self._scale), int(208 * self._scale))
+                cuco, int(150 * self._scale), int(208 * self._scale))
             self._man_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._man_cards[-1].type = 'cuco'
 
@@ -159,7 +159,7 @@ class Game():
         self._taunt_cards = []
         for cuco in self._TAUNTS:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(258 * self._scale), int(208 * self._scale))
+                cuco, int(150 * self._scale), int(208 * self._scale))
             self._taunt_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._taunt_cards[-1].type = 'cuco'
 
@@ -168,17 +168,17 @@ class Game():
         self._ghost_cards = []
         for cuco in self._GHOSTS:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(258 * self._scale), int(208 * self._scale))
+                cuco, int(150 * self._scale), int(208 * self._scale))
             self._ghost_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._ghost_cards[-1].type = 'cuco'
 
         self._sticky_cards = []
         self._cuco_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-            self._CUCOS[0], int(258 * self._scale), int(208 * self._scale))
+            self._CUCOS[0], int(150 * self._scale), int(208 * self._scale))
         self._man_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-            self._MEN[0], int(258 * self._scale), int(208 * self._scale))
+            self._MEN[0], int(150 * self._scale), int(208 * self._scale))
         self._ghost_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-            self._GHOSTS[0], int(258 * self._scale), int(208 * self._scale))
+            self._GHOSTS[0], int(150 * self._scale), int(208 * self._scale))
         for i in range(len(MSGS[1])):  # Check re i18n
             self._sticky_cards.append(Sprite(self._sprites, 0, 0,
                                              self._cuco_pixbuf))
@@ -485,7 +485,7 @@ class Game():
             self._panel.set_label(ALERTS[0])
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
-            play_audio_from_file(self, os.path.join(
+            gobject.idle_add(play_audio_from_file, self, os.path.join(
                     self._path, 'sounds', 'move.ogg'))
             return
         else:
