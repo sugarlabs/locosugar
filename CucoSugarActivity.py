@@ -27,7 +27,7 @@ from sugar import mime
 from gettext import gettext as _
 
 from game import Game
-from toolbar_utils import separator_factory, label_factory
+from toolbar_utils import separator_factory
 
 import logging
 _logger = logging.getLogger('cuco-activity')
@@ -74,8 +74,6 @@ class CucoSugarActivity(activity.Activity):
         self.set_toolbar_box(toolbox)
         toolbox.show()
         self.toolbar = toolbox.toolbar
-
-        self.timer_label = label_factory(self.toolbar, '')
 
         separator_factory(toolbox.toolbar, True, False)
 
