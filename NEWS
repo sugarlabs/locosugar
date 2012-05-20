@@ -1,0 +1,8 @@
+1
+
+New game modeled on CucoXO. This version is written in Python and
+hence will run on any architecture. It also will scale to arbitrary
+display sizes.
+
+Note that the graphics have been simplified, but the basic
+functionality is preserved.
