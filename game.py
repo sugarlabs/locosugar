@@ -242,7 +242,7 @@ class Game():
 
         # It may be time to advance to the next level.
         if (self.level == 6 and self._counter == len(MSGS)) or \
-           self._counter > 1: # 5:
+           self._counter > 4:
             self._first_time = True
             self.level += 1
             self._counter = 0
@@ -268,9 +268,16 @@ class Game():
             self._cuco_quadrant += int(uniform(1, 4))
             self._cuco_quadrant %= 4
             x, y = self._quad_to_xy(self._cuco_quadrant)
+            play_audio_from_file(self, os.path.join(
+                    self._path, 'sounds', 'twang.ogg'))
             self._cuco_cards[0].move((x, y))
             self._cuco_pos = (x, y)
+        elif self.level == 1:
+            play_audio_from_file(self, os.path.join(
+                    self._path, 'sounds', 'moan.ogg'))
         elif self.level == 2:
+            play_audio_from_file(self, os.path.join(
+                    self._path, 'sounds', 'moan.ogg'))
             # Place some Cucos on the canvas
             for i in range(self._counter + 1):
                 self._cuco_quadrant += int(uniform(1, 4))
@@ -280,6 +287,8 @@ class Game():
                 self._sticky_cards[i].type = 'cuco'
                 self._sticky_cards[i].set_layer(CUCO_LAYER)
         elif self.level == 3:
+            play_audio_from_file(self, os.path.join(
+                    self._path, 'sounds', 'twang.ogg'))
             # Place some Cucos on the left-side of the canvas
             for i in range(self._counter + 1):
                 self._cuco_quadrant = int(uniform(2, 4))
@@ -476,6 +485,8 @@ class Game():
             self._panel.set_label(ALERTS[0])
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
+            play_audio_from_file(self, os.path.join(
+                    self._path, 'sounds', 'move.ogg'))
             return
         else:
             for i in range(n):
