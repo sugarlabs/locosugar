@@ -223,7 +223,7 @@ class Game():
         self.level = 0
         self._all_clear()
         x = int(self._width / 4.)
-        y = int(self._height / 4.)
+        y = int(self._height / 8.)
         for i in range(len(str(self.score))):
             self._sticky_cards[i].move((x, y))
             self._sticky_cards[i].set_layer(CUCO_LAYER)
@@ -353,13 +353,13 @@ class Game():
         return x, y
 
     def _taunt(self, x, y, i):
-        self._taunt_cards[(i + 1) % 2].hide()
+        self._taunt_cards[(i + 1) % 4].hide()
         if self._clicked:
             self._timeout_id = None
             return True
         else:
-            self._taunt_cards[i % 2].move((x, y))
-            self._taunt_cards[i % 2].set_layer(CUCO_LAYER)
+            self._taunt_cards[i % 4].move((x, y))
+            self._taunt_cards[i % 4].set_layer(CUCO_LAYER)
             self._timeout_id = gobject.timeout_add(
                 200, self._taunt, x, y, i + 1)
 
