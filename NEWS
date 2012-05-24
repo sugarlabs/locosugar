@@ -1,3 +1,11 @@
+3
+
+ENHANCEMENT:
+* New artwork
+
+BUG FIX:
+* Fall back to gst-launch-10 if gst-launch not found
+
 2
 
 BUG FIX:
