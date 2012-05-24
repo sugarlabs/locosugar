@@ -1,6 +1,6 @@
 [Activity]
 name = LocoSugar
-activity_version = 1
+activity_version = 2
 license = GPLv3
 bundle_id = org.sugarlabs.LocoSugar
 exec = sugar-activity LocoSugarActivity.LocoSugarActivity
