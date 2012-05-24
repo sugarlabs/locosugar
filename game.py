@@ -261,7 +261,7 @@ class Game():
             self._panel.set_label(LABELS[self.level])
             self._panel.set_layer(PANEL_LAYER)
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'drio.ogg'))
+                    self._path, 'sounds', 'drip.ogg'))
             self._timer_reset()
 
         if self.level == 0:
