@@ -20,7 +20,7 @@ from random import uniform
 from gettext import gettext as _
 
 import logging
-_logger = logging.getLogger('cuco-activity')
+_logger = logging.getLogger('loco-activity')
 
 try:
     from sugar.graphics import style
@@ -31,20 +31,20 @@ except ImportError:
 from sprites import Sprites, Sprite
 from play_audio import play_audio_from_file
 
-CUCO_LAYER = 2
+LOCO_LAYER = 2
 PANEL_LAYER = 1
 BG_LAYER = 0
-LABELS = [_('Move the mouse to the Cuco.'),
-          _('Click on the Cuco with the left button.'),
-          _('Click on the Cucos with the left button.'),
-          _('Click and drag the Cucos to the right.'),
-          _('Type the letter on the Cuco.'),
+LABELS = [_('Move the mouse to the Loco XO.'),
+          _('Click on the Loco XO with the left button.'),
+          _('Click on the Loco XOs with the left button.'),
+          _('Click and drag the Loco XOs to the right.'),
+          _('Type the letter on the Loco XO.'),
           _('Use the SHIFT key for capital letters.'),
-          _('Type the letters on the Cuco in word order.')]
+          _('Type the letters on the Loco XO in word order.')]
 ALERTS = [_('Press ENTER to confirm.'),
           _('Press DELETE to delete text.')]
 ALPHABET = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"  # no I or l
-MSGS = [_('Hello Cuco'), _('Cucos are not real.')]
+MSGS = [_('Hello LocoXO'), _('LocoXOs are not real.')]
 NOISE_KEYS = ['Shift_L', 'Shift_R', 'Control_L', 'Caps_Lock', 'Pause',
               'Alt_L', 'Alt_R', 'KP_Enter', 'ISO_Level3_Shift', 'KP_Divide',
               'Escape', 'Return', 'KP_Page_Up', 'Up', 'Down', 'Menu',
@@ -92,9 +92,9 @@ class Game():
         self._height = gtk.gdk.screen_height()
         self._scale = self._width / 1200.
         self._first_time = True
-        self._cuco_pos = (0, 0)
-        self._cuco_dim = (0, 0)
-        self._cuco_quadrant = 3
+        self._loco_pos = (0, 0)
+        self._loco_dim = (0, 0)
+        self._loco_quadrant = 3
         self._drag_pos = [0, 0]
         self._counter = 0
         self._correct = 0
@@ -135,54 +135,54 @@ class Game():
         self._panel.set_label_attributes(20)
         self._panel.hide()
 
-        self._CUCOS = glob.glob(
-                os.path.join(self._path, 'images', 'cuco*.png'))
-        self._cuco_cards = []
-        for cuco in self._CUCOS:
+        self._LOCOS = glob.glob(
+                os.path.join(self._path, 'images', 'loco*.png'))
+        self._loco_cards = []
+        for loco in self._LOCOS:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(150 * self._scale), int(208 * self._scale))
-            self._cuco_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
-            self._cuco_cards[-1].type = 'cuco'
-        self._cuco_dim = (int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale), int(208 * self._scale))
+            self._loco_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
+            self._loco_cards[-1].type = 'loco'
+        self._loco_dim = (int(150 * self._scale), int(208 * self._scale))
 
         self._MEN = glob.glob(
                 os.path.join(self._path, 'images', 'man*.png'))
         self._man_cards = []
-        for cuco in self._MEN:
+        for loco in self._MEN:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale), int(208 * self._scale))
             self._man_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
-            self._man_cards[-1].type = 'cuco'
+            self._man_cards[-1].type = 'loco'
 
         self._TAUNTS = glob.glob(
                 os.path.join(self._path, 'images', 'taunt*.png'))
         self._taunt_cards = []
-        for cuco in self._TAUNTS:
+        for loco in self._TAUNTS:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale), int(208 * self._scale))
             self._taunt_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
-            self._taunt_cards[-1].type = 'cuco'
+            self._taunt_cards[-1].type = 'loco'
 
         self._GHOSTS = glob.glob(
                 os.path.join(self._path, 'images', 'ghost*.png'))
         self._ghost_cards = []
-        for cuco in self._GHOSTS:
+        for loco in self._GHOSTS:
             pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-                cuco, int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale), int(208 * self._scale))
             self._ghost_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
-            self._ghost_cards[-1].type = 'cuco'
+            self._ghost_cards[-1].type = 'loco'
 
         self._sticky_cards = []
-        self._cuco_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
-            self._CUCOS[0], int(150 * self._scale), int(208 * self._scale))
+        self._loco_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+            self._LOCOS[0], int(150 * self._scale), int(208 * self._scale))
         self._man_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
             self._MEN[0], int(150 * self._scale), int(208 * self._scale))
         self._ghost_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
             self._GHOSTS[0], int(150 * self._scale), int(208 * self._scale))
         for i in range(len(MSGS[1])):  # Check re i18n
             self._sticky_cards.append(Sprite(self._sprites, 0, 0,
-                                             self._cuco_pixbuf))
-            self._sticky_cards[-1].type = 'cuco'
+                                             self._loco_pixbuf))
+            self._sticky_cards[-1].type = 'loco'
             self._sticky_cards[-1].set_label_attributes(24,
                                                         vert_align='bottom')
 
@@ -204,7 +204,7 @@ class Game():
 
     def _all_clear(self):
         ''' Things to reinitialize when starting up a new game. '''
-        for p in self._cuco_cards:
+        for p in self._loco_cards:
             p.hide()
         for p in self._man_cards:
             p.hide()
@@ -213,7 +213,7 @@ class Game():
         for p in self._ghost_cards:
             p.hide()
         for p in self._sticky_cards:
-            p.set_shape(self._cuco_pixbuf)
+            p.set_shape(self._loco_pixbuf)
             p.set_label('')
             p.set_label_color('white')
             p.hide()
@@ -226,9 +226,9 @@ class Game():
         y = int(self._height / 8.)
         for i in range(len(str(self.score))):
             self._sticky_cards[i].move((x, y))
-            self._sticky_cards[i].set_layer(CUCO_LAYER)
+            self._sticky_cards[i].set_layer(LOCO_LAYER)
             self._sticky_cards[i].set_label(str(self.score)[i])
-            x += int(self._cuco_dim[0] / 2.)
+            x += int(self._loco_dim[0] / 2.)
         self.score = 0
         self._parent.unfullscreen()
         gobject.idle_add(play_audio_from_file, self, os.path.join(
@@ -264,58 +264,58 @@ class Game():
             self._timer_reset()
 
         if self.level == 0:
-            # Choose a random location for the Cuco
-            self._cuco_quadrant += int(uniform(1, 4))
-            self._cuco_quadrant %= 4
-            x, y = self._quad_to_xy(self._cuco_quadrant)
+            # Choose a random location for the Loco
+            self._loco_quadrant += int(uniform(1, 4))
+            self._loco_quadrant %= 4
+            x, y = self._quad_to_xy(self._loco_quadrant)
             play_audio_from_file(self, os.path.join(
                     self._path, 'sounds', 'bark.ogg'))
-            self._cuco_cards[0].move((x, y))
-            self._cuco_pos = (x, y)
+            self._loco_cards[0].move((x, y))
+            self._loco_pos = (x, y)
         elif self.level == 1:
             play_audio_from_file(self, os.path.join(
                     self._path, 'sounds', 'glass.ogg'))
         elif self.level == 2:
             play_audio_from_file(self, os.path.join(
                     self._path, 'sounds', 'glass.ogg'))
-            # Place some Cucos on the canvas
+            # Place some Locos on the canvas
             for i in range(self._counter + 1):
-                self._cuco_quadrant += int(uniform(1, 4))
-                self._cuco_quadrant %= 4
-                x, y = self._quad_to_xy(self._cuco_quadrant)
+                self._loco_quadrant += int(uniform(1, 4))
+                self._loco_quadrant %= 4
+                x, y = self._quad_to_xy(self._loco_quadrant)
                 self._sticky_cards[i].move((x, y))
-                self._sticky_cards[i].type = 'cuco'
-                self._sticky_cards[i].set_layer(CUCO_LAYER)
+                self._sticky_cards[i].type = 'loco'
+                self._sticky_cards[i].set_layer(LOCO_LAYER)
         elif self.level == 3:
             play_audio_from_file(self, os.path.join(
                     self._path, 'sounds', 'bark.ogg'))
-            # Place some Cucos on the left-side of the canvas
+            # Place some Locos on the left-side of the canvas
             for i in range(self._counter + 1):
-                self._cuco_quadrant = int(uniform(2, 4))
-                x, y = self._quad_to_xy(self._cuco_quadrant)
+                self._loco_quadrant = int(uniform(2, 4))
+                x, y = self._quad_to_xy(self._loco_quadrant)
                 self._sticky_cards[i].move((x, y))
-                self._sticky_cards[i].type = 'cuco'
-                self._sticky_cards[i].set_layer(CUCO_LAYER)
+                self._sticky_cards[i].type = 'loco'
+                self._sticky_cards[i].set_layer(LOCO_LAYER)
         elif self.level == 4:
-            # Place some Cucos on the canvas with letters as labels
+            # Place some Locos on the canvas with letters as labels
             # Just lowercase
             for i in range(self._counter + 1):
-                self._cuco_quadrant = int(uniform(0, 4))
-                x, y = self._quad_to_xy(self._cuco_quadrant)
+                self._loco_quadrant = int(uniform(0, 4))
+                x, y = self._quad_to_xy(self._loco_quadrant)
                 self._sticky_cards[i].move((x, y))
-                self._sticky_cards[i].type = 'cuco'
-                self._sticky_cards[i].set_layer(CUCO_LAYER)
+                self._sticky_cards[i].type = 'loco'
+                self._sticky_cards[i].set_layer(LOCO_LAYER)
                 self._sticky_cards[i].set_label(
                     ALPHABET[int(uniform(25, len(ALPHABET)))])
         elif self.level == 5:
-            # Place some Cucos on the canvas with letters as labels
+            # Place some Locos on the canvas with letters as labels
             # Mixed case
             for i in range(self._counter + 1):
-                self._cuco_quadrant = int(uniform(0, 4))
-                x, y = self._quad_to_xy(self._cuco_quadrant)
+                self._loco_quadrant = int(uniform(0, 4))
+                x, y = self._quad_to_xy(self._loco_quadrant)
                 self._sticky_cards[i].move((x, y))
-                self._sticky_cards[i].type = 'cuco'
-                self._sticky_cards[i].set_layer(CUCO_LAYER)
+                self._sticky_cards[i].type = 'loco'
+                self._sticky_cards[i].set_layer(LOCO_LAYER)
                 self._sticky_cards[i].set_label(
                     ALPHABET[int(uniform(0, len(ALPHABET)))])
         elif self.level == 6:
@@ -324,30 +324,30 @@ class Game():
             c = 0
             for i in range(len(MSGS[self._counter])):
                 if MSGS[self._counter][i] == ' ':
-                    y += self._cuco_dim[1]
+                    y += self._loco_dim[1]
                     x = 0
                 else:
                     self._sticky_cards[c].move((x, y))
                     self._sticky_cards[c].type = i
-                    self._sticky_cards[c].set_layer(CUCO_LAYER)
+                    self._sticky_cards[c].set_layer(LOCO_LAYER)
                     self._sticky_cards[c].set_label(MSGS[self._counter][i])
                     c += 1
-                    x += int(self._cuco_dim[0] / 2.)
+                    x += int(self._loco_dim[0] / 2.)
 
         if self.level in [0, 1]:
-            self._cuco_quadrant += int(uniform(1, 4))
-            self._cuco_quadrant %= 4
-            x, y = self._quad_to_xy(self._cuco_quadrant)
+            self._loco_quadrant += int(uniform(1, 4))
+            self._loco_quadrant %= 4
+            x, y = self._quad_to_xy(self._loco_quadrant)
             if self.level == 0:
-                self._move_cuco(x, y, 0)
+                self._move_loco(x, y, 0)
             else:
                 self._taunt(x, y, 0)
 
     def _quad_to_xy(self, q):
-        x = int(max(0, (self._width / 2.) * uniform(0, 1) - self._cuco_dim[0]))
+        x = int(max(0, (self._width / 2.) * uniform(0, 1) - self._loco_dim[0]))
         if q in [0, 1]:
             x += int(self._width / 2.)
-        y = int(max(0, (self._height / 2.) * uniform(0, 1) - self._cuco_dim[1]))
+        y = int(max(0, (self._height / 2.) * uniform(0, 1) - self._loco_dim[1]))
         if q in [1, 2]:
             y += int(self._height / 2.)
         return x, y
@@ -359,22 +359,22 @@ class Game():
             return True
         else:
             self._taunt_cards[i % 4].move((x, y))
-            self._taunt_cards[i % 4].set_layer(CUCO_LAYER)
+            self._taunt_cards[i % 4].set_layer(LOCO_LAYER)
             self._timeout_id = gobject.timeout_add(
                 200, self._taunt, x, y, i + 1)
 
-    def _move_cuco(self, x, y, i):
-        j = (i + 1) % len(self._cuco_cards)
-        cx, cy = self._cuco_cards[i].get_xy()
+    def _move_loco(self, x, y, i):
+        j = (i + 1) % len(self._loco_cards)
+        cx, cy = self._loco_cards[i].get_xy()
         dx = cx - x
         dy = cy - y
         if dx * dx + dy * dy < 100:
-            self._cuco_cards[j].move((x, y))
-            self._cuco_pos = (x, y)
-            self._cuco_cards[j].hide()
-            self._cuco_cards[i].hide()
+            self._loco_cards[j].move((x, y))
+            self._loco_pos = (x, y)
+            self._loco_cards[j].hide()
+            self._loco_cards[i].hide()
             self._man_cards[0].move((x, y))
-            self._man_cards[0].set_layer(CUCO_LAYER)
+            self._man_cards[0].set_layer(LOCO_LAYER)
             self._timeout_id = None
             if self._pause > 50:
                 self._pause -= 10
@@ -388,12 +388,12 @@ class Game():
                 cy -= 5
             elif dy < 0:
                 cy += 5
-            self._cuco_cards[j].move((cx, cy))
-            self._cuco_pos = (cx, cy)
-            self._cuco_cards[j].set_layer(CUCO_LAYER)
-            self._cuco_cards[i].hide()
+            self._loco_cards[j].move((cx, cy))
+            self._loco_pos = (cx, cy)
+            self._loco_cards[j].set_layer(LOCO_LAYER)
+            self._loco_cards[i].hide()
             self._timeout_id = gobject.timeout_add(
-                self._pause, self._move_cuco, x, y, j)
+                self._pause, self._move_loco, x, y, j)
 
     def _keypress_cb(self, area, event):
         ''' Keypress '''
@@ -498,18 +498,18 @@ class Game():
         if self._seconds > 1:
             self._panel.hide()
         if not self._clicked and self.level == 0:
-            # For Game 0, see if the mouse is on the Cuco
-            dx = x - self._cuco_pos[0] - self._cuco_dim[0] / 2.
-            dy = y - self._cuco_pos[1] - self._cuco_dim[1] / 2.
+            # For Game 0, see if the mouse is on the Loco
+            dx = x - self._loco_pos[0] - self._loco_dim[0] / 2.
+            dy = y - self._loco_pos[1] - self._loco_dim[1] / 2.
             if dx * dx + dy * dy < 200:
                 self._clicked = True
                 if self._timeout_id is not None:
                     gobject.source_remove(self._timeout_id)
                 # Play again
                 self._all_clear()
-                self._man_cards[0].move((x - int(self._cuco_dim[0] / 2.),
-                                         y - int(self._cuco_dim[1] / 2.)))
-                self._man_cards[0].set_layer(CUCO_LAYER)
+                self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
+                                         y - int(self._loco_dim[1] / 2.)))
+                self._man_cards[0].set_layer(LOCO_LAYER)
                 self._correct += 1
                 self._counter += 1
                 gobject.timeout_add(1000, self.new_game, False)
@@ -533,7 +533,7 @@ class Game():
             self._drag_pos = [x, y]
             if x > self._width / 2.:
                 self._press.set_shape(self._man_pixbuf)
-                if self._press.type == 'cuco':
+                if self._press.type == 'loco':
                     self._correct += 1
                     self._press.type = 'man'
         return True
@@ -559,7 +559,7 @@ class Game():
         spr = self._sprites.find_sprite((x, y))
         if spr is None:
             return
-        if spr.type != 'cuco':
+        if spr.type != 'loco':
             return
         if self.level < 2 and self._timeout_id is None:
             return
@@ -569,9 +569,9 @@ class Game():
         # Games 1, 2, and 3 involve clicks; Games 4 and 5 allow click to drag
         if self.level == 1:
             self._all_clear()
-            self._man_cards[0].move((x - int(self._cuco_dim[0] / 2.),
-                                     y - int(self._cuco_dim[1] / 2.)))
-            self._man_cards[0].set_layer(CUCO_LAYER)
+            self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
+                                     y - int(self._loco_dim[1] / 2.)))
+            self._man_cards[0].set_layer(LOCO_LAYER)
             self._clicked = True
             self._counter += 1
             self._correct += 1

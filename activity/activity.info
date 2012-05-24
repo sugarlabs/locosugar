@@ -1,8 +1,8 @@
 [Activity]
-name = CucoSugar
+name = LocoSugar
 activity_version = 1
 license = GPLv3
-bundle_id = org.sugarlabs.CucoSugar
-exec = sugar-activity CucoSugarActivity.CucoSugarActivity
-icon = activity-cuco
+bundle_id = org.sugarlabs.LocoSugar
+exec = sugar-activity LocoSugarActivity.LocoSugarActivity
+icon = activity-loco
 show_launcher = yes

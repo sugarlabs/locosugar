@@ -30,15 +30,15 @@ from game import Game
 from toolbar_utils import separator_factory
 
 import logging
-_logger = logging.getLogger('cuco-activity')
+_logger = logging.getLogger('loco-activity')
 
 
-class CucoSugarActivity(activity.Activity):
-    ''' Simplified Cuco activity rewritten in Python '''
+class LocoSugarActivity(activity.Activity):
+    ''' Simplified Loco activity rewritten in Python '''
 
     def __init__(self, handle):
         ''' Initialize the toolbars and the game board '''
-        super(CucoSugarActivity, self).__init__(handle)
+        super(LocoSugarActivity, self).__init__(handle)
 
         self.path = activity.get_bundle_path()
 
