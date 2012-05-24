@@ -232,7 +232,7 @@ class Game():
         self.score = 0
         self._parent.unfullscreen()
         gobject.idle_add(play_audio_from_file, self, os.path.join(
-                self._path, 'sounds', 'end.ogg'))
+                self._path, 'sounds', 'sonar.ogg'))
         gobject.timeout_add(5000, self.new_game, True)
 
     def new_game(self, first_time):
@@ -260,7 +260,7 @@ class Game():
             self._panel.set_label(LABELS[self.level])
             self._panel.set_layer(PANEL_LAYER)
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'sweetding.ogg'))
+                    self._path, 'sounds', 'drio.ogg'))
             self._timer_reset()
 
         if self.level == 0:
@@ -269,15 +269,15 @@ class Game():
             self._cuco_quadrant %= 4
             x, y = self._quad_to_xy(self._cuco_quadrant)
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'twang.ogg'))
+                    self._path, 'sounds', 'bark.ogg'))
             self._cuco_cards[0].move((x, y))
             self._cuco_pos = (x, y)
         elif self.level == 1:
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'moan.ogg'))
+                    self._path, 'sounds', 'glass.ogg'))
         elif self.level == 2:
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'moan.ogg'))
+                    self._path, 'sounds', 'glass.ogg'))
             # Place some Cucos on the canvas
             for i in range(self._counter + 1):
                 self._cuco_quadrant += int(uniform(1, 4))
@@ -288,7 +288,7 @@ class Game():
                 self._sticky_cards[i].set_layer(CUCO_LAYER)
         elif self.level == 3:
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'twang.ogg'))
+                    self._path, 'sounds', 'bark.ogg'))
             # Place some Cucos on the left-side of the canvas
             for i in range(self._counter + 1):
                 self._cuco_quadrant = int(uniform(2, 4))
@@ -353,12 +353,6 @@ class Game():
         return x, y
 
     def _taunt(self, x, y, i):
-        '''
-        if i == 0:
-            gobject.idle_add(play_audio_from_file, self, os.path.join(
-                    self._path, 'sounds', 'taunt.ogg'))
-        '''
-
         self._taunt_cards[(i + 1) % 2].hide()
         if self._clicked:
             self._timeout_id = None
@@ -464,7 +458,7 @@ class Game():
                 self._panel.set_layer(PANEL_LAYER)
                 self._waiting_for_delete = True
                 play_audio_from_file(self, os.path.join(
-                        self._path, 'sounds', 'error.ogg'))
+                        self._path, 'sounds', 'glass.ogg'))
         else:
             for i in range(n):
                 if self._sticky_cards[i].labels[0] == k:
@@ -486,7 +480,7 @@ class Game():
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
             gobject.idle_add(play_audio_from_file, self, os.path.join(
-                    self._path, 'sounds', 'move.ogg'))
+                    self._path, 'sounds', 'drip.ogg'))
             return
         else:
             for i in range(n):
