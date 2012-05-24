@@ -43,7 +43,7 @@ LABELS = [_('Move the mouse to the Cuco.'),
           _('Type the letters on the Cuco in word order.')]
 ALERTS = [_('Press ENTER to confirm.'),
           _('Press DELETE to delete text.')]
-ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+ALPHABET = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"  # no I or l
 MSGS = [_('Hello Cuco'), _('Cucos are not real.')]
 NOISE_KEYS = ['Shift_L', 'Shift_R', 'Control_L', 'Caps_Lock', 'Pause',
               'Alt_L', 'Alt_R', 'KP_Enter', 'ISO_Level3_Shift', 'KP_Divide',
@@ -223,7 +223,7 @@ class Game():
         self.level = 0
         self._all_clear()
         x = int(self._width / 4.)
-        y = int(self._height / 3.)
+        y = int(self._height / 4.)
         for i in range(len(str(self.score))):
             self._sticky_cards[i].move((x, y))
             self._sticky_cards[i].set_layer(CUCO_LAYER)
@@ -306,7 +306,7 @@ class Game():
                 self._sticky_cards[i].type = 'cuco'
                 self._sticky_cards[i].set_layer(CUCO_LAYER)
                 self._sticky_cards[i].set_label(
-                    ALPHABET[int(uniform(26, len(ALPHABET)))])
+                    ALPHABET[int(uniform(25, len(ALPHABET)))])
         elif self.level == 5:
             # Place some Cucos on the canvas with letters as labels
             # Mixed case
