@@ -353,13 +353,14 @@ class Game():
         return x, y
 
     def _taunt(self, x, y, i):
-        self._taunt_cards[(i + 1) % 4].hide()
+        n = len(self._taunt_cards)
+        self._taunt_cards[(i + 1) % n].hide()
         if self._clicked:
             self._timeout_id = None
             return True
         else:
-            self._taunt_cards[i % 4].move((x, y))
-            self._taunt_cards[i % 4].set_layer(LOCO_LAYER)
+            self._taunt_cards[i % n].move((x, y))
+            self._taunt_cards[i % n].set_layer(LOCO_LAYER)
             self._timeout_id = gobject.timeout_add(
                 200, self._taunt, x, y, i + 1)
 
