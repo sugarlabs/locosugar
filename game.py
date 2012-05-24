@@ -465,6 +465,7 @@ class Game():
             for i in range(n):
                 if self._sticky_cards[i].labels[0] == k:
                     self._sticky_cards[i].set_label('')
+                    self._sticky_cards[i].hide()
                     break
 
         # Test for end condition
