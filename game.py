@@ -43,7 +43,8 @@ LABELS = [_('Move the mouse to the Loco XO.'),
           _('Type the letters on the Loco XO in word order.')]
 ALERTS = [_('Press ENTER to confirm.'),
           _('Press DELETE to delete text.')]
-ALPHABET = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"  # no I or l
+ALPHABETLC = "abcdefghijkmnopqrstuvwxyz"  # no l
+ALPHABETUC = "ABCDEFGHJKLMNOPQRSTUVWXYZ"  # no I
 MSGS = [_('Hello LocoXO'), _('LocoXOs are not real.')]
 NOISE_KEYS = ['Shift_L', 'Shift_R', 'Control_L', 'Caps_Lock', 'Pause',
               'Alt_L', 'Alt_R', 'KP_Enter', 'ISO_Level3_Shift', 'KP_Divide',
@@ -306,10 +307,10 @@ class Game():
                 self._sticky_cards[i].type = 'loco'
                 self._sticky_cards[i].set_layer(LOCO_LAYER)
                 self._sticky_cards[i].set_label(
-                    ALPHABET[int(uniform(25, len(ALPHABET)))])
+                    ALPHABETLC[int(uniform(0, len(ALPHABETLC)))])
         elif self.level == 5:
             # Place some Locos on the canvas with letters as labels
-            # Mixed case
+            # Uppercase
             for i in range(self._counter + 1):
                 self._loco_quadrant = int(uniform(0, 4))
                 x, y = self._quad_to_xy(self._loco_quadrant)
@@ -317,7 +318,7 @@ class Game():
                 self._sticky_cards[i].type = 'loco'
                 self._sticky_cards[i].set_layer(LOCO_LAYER)
                 self._sticky_cards[i].set_label(
-                    ALPHABET[int(uniform(0, len(ALPHABET)))])
+                    ALPHABETUC[int(uniform(0, len(ALPHABETUC)))])
         elif self.level == 6:
             x = 0
             y = 0
