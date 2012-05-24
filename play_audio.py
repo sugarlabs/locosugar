@@ -30,5 +30,15 @@ def play_audio_from_file(parent, file_path):
     command_line = ['gst-launch', 'filesrc', 'location=' + file_path,
                     '! oggdemux', '! vorbisdec', '! audioconvert',
                     '! alsasink']
-    subprocess.call(command_line)
+    try:
+        subprocess.call(command_line)
+    except:
+        try:
+            command_line = ['gst-launch-10', 'filesrc',
+                            'location=' + file_path,
+                            '! oggdemux', '! vorbisdec', '! audioconvert',
+                            '! alsasink']
+            subprocess.call(command_line)
+        except:
+            pass
 
