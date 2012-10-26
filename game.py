@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #Copyright (c) 2012 Walter Bender
-
+#Copyright (c) 2012 Ignacio Rodriguez
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -10,8 +10,7 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-import gtk
-import gobject
+from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
 import cairo
 import os
 import glob
@@ -22,11 +21,8 @@ from gettext import gettext as _
 import logging
 _logger = logging.getLogger('loco-activity')
 
-try:
-    from sugar.graphics import style
-    GRID_CELL_SIZE = style.GRID_CELL_SIZE
-except ImportError:
-    GRID_CELL_SIZE = 0
+from sugar3.graphics import style
+GRID_CELL_SIZE = style.GRID_CELL_SIZE
 
 from sprites import Sprites, Sprite
 from play_audio import play_audio_from_file
@@ -79,18 +75,17 @@ class Game():
         self._parent.show_all()
         self._path = path
 
-        self._canvas.set_flags(gtk.CAN_FOCUS)
-        self._canvas.connect("expose-event", self._expose_cb)
-        self._canvas.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self._canvas.connect("draw", self.__draw_cb)
+        self._canvas.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         self._canvas.connect("button-press-event", self._button_press_cb)
-        self._canvas.add_events(gtk.gdk.POINTER_MOTION_MASK)
+        self._canvas.add_events(Gdk.EventMask.POINTER_MOTION_MASK)
         self._canvas.connect("motion-notify-event", self._mouse_move_cb)
-        self._canvas.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
+        self._canvas.add_events(Gdk.EventMask.BUTTON_RELEASE_MASK)
         self._canvas.connect('button-release-event', self._button_release_cb)
         self._canvas.connect('key_press_event', self._keypress_cb)
 
-        self._width = gtk.gdk.screen_width()
-        self._height = gtk.gdk.screen_height()
+        self._width = Gdk.Screen.width()
+        self._height = Gdk.Screen.height()
         self._scale = self._width / 1200.
         self._first_time = True
         self._loco_pos = (0, 0)
@@ -120,7 +115,7 @@ class Game():
         self._backgrounds = []
         for bg in self._BG:
             self._backgrounds.append(Sprite(
-                    self._sprites, 0, 0, gtk.gdk.pixbuf_new_from_file_at_size(
+                    self._sprites, 0, 0, GdkPixbuf.Pixbuf.new_from_file_at_size(
                         os.path.join(self._path, 'images', bg),
                         self._width, self._height)))
             self._backgrounds[-1].type = 'background'
@@ -128,7 +123,7 @@ class Game():
 
         self._panel = Sprite(
             self._sprites, int(400 * self._scale), int(400 * self._scale),
-            gtk.gdk.pixbuf_new_from_file_at_size(
+            GdkPixbuf.Pixbuf.new_from_file_at_size(
                 os.path.join(self._path, 'images', 'ventana.png'),
                 int(720 * self._scale), int(370 * self._scale)))
         self._panel.type = 'panel'
@@ -140,7 +135,7 @@ class Game():
                 os.path.join(self._path, 'images', 'loco*.png'))
         self._loco_cards = []
         for loco in self._LOCOS:
-            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 loco, int(150 * self._scale), int(208 * self._scale))
             self._loco_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._loco_cards[-1].type = 'loco'
@@ -150,7 +145,7 @@ class Game():
                 os.path.join(self._path, 'images', 'man*.png'))
         self._man_cards = []
         for loco in self._MEN:
-            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 loco, int(150 * self._scale), int(208 * self._scale))
             self._man_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._man_cards[-1].type = 'loco'
@@ -159,7 +154,7 @@ class Game():
                 os.path.join(self._path, 'images', 'taunt*.png'))
         self._taunt_cards = []
         for loco in self._TAUNTS:
-            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 loco, int(150 * self._scale), int(208 * self._scale))
             self._taunt_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._taunt_cards[-1].type = 'loco'
@@ -168,17 +163,17 @@ class Game():
                 os.path.join(self._path, 'images', 'ghost*.png'))
         self._ghost_cards = []
         for loco in self._GHOSTS:
-            pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 loco, int(150 * self._scale), int(208 * self._scale))
             self._ghost_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._ghost_cards[-1].type = 'loco'
 
         self._sticky_cards = []
-        self._loco_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+        self._loco_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._LOCOS[0], int(150 * self._scale), int(208 * self._scale))
-        self._man_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+        self._man_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._MEN[0], int(150 * self._scale), int(208 * self._scale))
-        self._ghost_pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+        self._ghost_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._GHOSTS[0], int(150 * self._scale), int(208 * self._scale))
         for i in range(len(MSGS[1])):  # Check re i18n
             self._sticky_cards.append(Sprite(self._sprites, 0, 0,
@@ -191,14 +186,14 @@ class Game():
 
     def _time_increment(self):
         ''' Track seconds since start_time. '''
-        self._seconds = int(gobject.get_current_time() - self._start_time)
-        self.timer_id = gobject.timeout_add(1000, self._time_increment)
+        self._seconds = int(GObject.get_current_time() - self._start_time)
+        self.timer_id = GObject.timeout_add(1000, self._time_increment)
 
     def _timer_reset(self):
         ''' Reset the timer for each level '''
-        self._start_time = gobject.get_current_time()
+        self._start_time = GObject.get_current_time()
         if self._timer_id is not None:
-            gobject.source_remove(self._timer_id)
+            GObject.source_remove(self._timer_id)
             self._timer_id = None
         self.score += self._seconds
         self._time_increment()
@@ -232,9 +227,9 @@ class Game():
             x += int(self._loco_dim[0] / 2.)
         self.score = 0
         self._parent.unfullscreen()
-        gobject.idle_add(play_audio_from_file, self, os.path.join(
+        GObject.idle_add(play_audio_from_file, self, os.path.join(
                 self._path, 'sounds', 'sonar.ogg'))
-        gobject.timeout_add(5000, self.new_game, True)
+        GObject.timeout_add(5000, self.new_game, True)
 
     def new_game(self, first_time):
         ''' Start a new game at the current level. '''
@@ -362,7 +357,7 @@ class Game():
         else:
             self._taunt_cards[i % n].move((x, y))
             self._taunt_cards[i % n].set_layer(LOCO_LAYER)
-            self._timeout_id = gobject.timeout_add(
+            self._timeout_id = GObject.timeout_add(
                 200, self._taunt, x, y, i + 1)
 
     def _move_loco(self, x, y, i):
@@ -394,7 +389,7 @@ class Game():
             self._loco_pos = (cx, cy)
             self._loco_cards[j].set_layer(LOCO_LAYER)
             self._loco_cards[i].hide()
-            self._timeout_id = gobject.timeout_add(
+            self._timeout_id = GObject.timeout_add(
                 self._pause, self._move_loco, x, y, j)
 
     def _keypress_cb(self, area, event):
@@ -402,8 +397,8 @@ class Game():
         # Games 4, 5, and 6 use the keyboard
         if self.level not in [4, 5, 6]:
             return True
-        k = gtk.gdk.keyval_name(event.keyval)
-        u = gtk.gdk.keyval_to_unicode(event.keyval)
+        k = Gdk.keyval_name(event.keyval)
+        u = Gdk.keyval_to_unicode(event.keyval)
 
         if self._waiting_for_enter:
             if k == 'Return':
@@ -411,7 +406,7 @@ class Game():
                 self._panel.hide()
                 self._counter += 1
                 self._correct = 0
-                gobject.timeout_add(1000, self.new_game, False)
+                GObject.timeout_add(1000, self.new_game, False)
             return
 
         if k in NOISE_KEYS or k in WHITE_SPACE:
@@ -482,7 +477,7 @@ class Game():
             self._panel.set_label(ALERTS[0])
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
-            gobject.idle_add(play_audio_from_file, self, os.path.join(
+            GObject.idle_add(play_audio_from_file, self, os.path.join(
                     self._path, 'sounds', 'drip.ogg'))
             return
         else:
@@ -491,7 +486,7 @@ class Game():
                     return True
         self._counter += 1
         self._correct = 0
-        gobject.timeout_add(1000, self.new_game, False)
+        GObject.timeout_add(1000, self.new_game, False)
 
     def _mouse_move_cb(self, win, event):
         ''' Move the mouse. '''
@@ -507,7 +502,7 @@ class Game():
             if dx * dx + dy * dy < 200:
                 self._clicked = True
                 if self._timeout_id is not None:
-                    gobject.source_remove(self._timeout_id)
+                    GObject.source_remove(self._timeout_id)
                 # Play again
                 self._all_clear()
                 self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
@@ -515,7 +510,7 @@ class Game():
                 self._man_cards[0].set_layer(LOCO_LAYER)
                 self._correct += 1
                 self._counter += 1
-                gobject.timeout_add(1000, self.new_game, False)
+                GObject.timeout_add(1000, self.new_game, False)
         elif self.level in [4, 5]:
             # For Game 4 and 5, we allow dragging
             if self._press is None:
@@ -548,7 +543,7 @@ class Game():
             if self._correct == self._counter + 1:
                 self._counter += 1
                 self._correct = 0
-                gobject.timeout_add(2000, self.new_game, False)
+                GObject.timeout_add(2000, self.new_game, False)
         self._press = None
         self._drag_pos = [0, 0]
         return True
@@ -579,15 +574,15 @@ class Game():
             self._counter += 1
             self._correct += 1
             if self._timeout_id is not None:
-                gobject.source_remove(self._timeout_id)
-            gobject.timeout_add(2000, self.new_game, False)
+                GObject.source_remove(self._timeout_id)
+            GObject.timeout_add(2000, self.new_game, False)
         elif self.level == 2:
             spr.set_shape(self._ghost_pixbuf)
             spr.type = 'ghost'
             if self._correct == self._counter:
                 self._counter += 1
                 self._correct = 0
-                gobject.timeout_add(2000, self.new_game, False)
+                GObject.timeout_add(2000, self.new_game, False)
             else:
                 self._correct += 1
         elif self.level in [3, 4, 5]:
@@ -596,8 +591,8 @@ class Game():
             self._drag_pos = [x, y]
         return True
 
-    def _expose_cb(self, win, event):
-        self.do_expose_event(event)
+    def __draw_cb(self, canvas, cr):
+        self._sprites.redraw_sprites(cr=cr)
 
     def do_expose_event(self, event):
         ''' Handle the expose-event by drawing '''
@@ -610,4 +605,4 @@ class Game():
         self._sprites.redraw_sprites(cr=cr)
 
     def _destroy_cb(self, win, event):
-        gtk.main_quit()
+        Gtk.main_quit()

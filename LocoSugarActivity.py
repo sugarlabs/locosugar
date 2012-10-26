@@ -1,4 +1,5 @@
 #Copyright (c) 2012 Walter Bender
+#Copyright (c) 2012 Ignacio Rodriguez
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,20 +10,18 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+from gi.repository import Gtk, GObject, Gdk
 
-import gtk
-import gobject
-
-from sugar.activity import activity
-from sugar import profile
-from sugar.graphics.toolbarbox import ToolbarBox
-from sugar.activity.widgets import ActivityToolbarButton
-from sugar.graphics.toolbarbox import ToolbarButton
-from sugar.activity.widgets import StopButton
-from sugar.graphics.alert import NotifyAlert
-from sugar.graphics.objectchooser import ObjectChooser
-from sugar.datastore import datastore
-from sugar import mime
+from sugar3.activity import activity
+from sugar3 import profile
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.activity.widgets import ActivityToolbarButton
+from sugar3.graphics.toolbarbox import ToolbarButton
+from sugar3.activity.widgets import StopButton
+from sugar3.graphics.alert import NotifyAlert
+from sugar3.graphics.objectchooser import ObjectChooser
+from sugar3.datastore import datastore
+from sugar3 import mime
 
 from gettext import gettext as _
 
@@ -44,9 +43,9 @@ class LocoSugarActivity(activity.Activity):
 
         self._setup_toolbars()
 
-        canvas = gtk.DrawingArea()
-        canvas.set_size_request(gtk.gdk.screen_width(), \
-                                gtk.gdk.screen_height())
+        canvas = Gtk.DrawingArea()
+        canvas.set_size_request(Gdk.Screen.width(), \
+                                Gdk.Screen.height())
         self.set_canvas(canvas)
         canvas.show()
         self.show_all()
@@ -57,7 +56,7 @@ class LocoSugarActivity(activity.Activity):
         if 'score' in self.metadata:
             self._game.score = int(self.metadata['score'])
         self.fullscreen()
-        gobject.timeout_add(1000, self._game.new_game, True)
+        GObject.timeout_add(1000, self._game.new_game, True)
 
     def _setup_toolbars(self):
         ''' Setup the toolbars. '''
