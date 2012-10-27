@@ -82,7 +82,11 @@ class Game():
         self._canvas.connect("motion-notify-event", self._mouse_move_cb)
         self._canvas.add_events(Gdk.EventMask.BUTTON_RELEASE_MASK)
         self._canvas.connect('button-release-event', self._button_release_cb)
-        self._canvas.connect('key_press_event', self._keypress_cb)
+        self._canvas.add_events(Gdk.EventMask.KEY_PRESS_MASK)
+        self._canvas.connect('key-press-event', self._keypress_cb)
+
+        self._canvas.set_can_focus(True)
+        self._canvas.grab_focus()
 
         self._width = Gdk.Screen.width()
         self._height = Gdk.Screen.height()
@@ -395,6 +399,7 @@ class Game():
     def _keypress_cb(self, area, event):
         ''' Keypress '''
         # Games 4, 5, and 6 use the keyboard
+        print 'keypress event'
         if self.level not in [4, 5, 6]:
             return True
         k = Gdk.keyval_name(event.keyval)
@@ -491,7 +496,6 @@ class Game():
     def _mouse_move_cb(self, win, event):
         ''' Move the mouse. '''
         # Games 0, 3, 4, and 5 use move events
-        win.grab_focus()
         x, y = map(int, event.get_coords())
         if self._seconds > 1:
             self._panel.hide()
@@ -550,7 +554,6 @@ class Game():
 
     def _button_press_cb(self, win, event):
         self._press = None
-        win.grab_focus()
         x, y = map(int, event.get_coords())
         if self.level == 0:
             return
