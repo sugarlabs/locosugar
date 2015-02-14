@@ -7,4 +7,4 @@ exec = sugar-activity LocoSugarActivity.LocoSugarActivity
 icon = activity-loco
 show_launcher = yes
 summary = learn how to use the mouse and keyboard
-
+category = teacher
