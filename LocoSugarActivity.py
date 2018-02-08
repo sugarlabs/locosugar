@@ -1,5 +1,5 @@
-#Copyright (c) 2012 Walter Bender
-#Copyright (c) 2012 Ignacio Rodriguez
+# Copyright (c) 2012 Walter Bender
+# Copyright (c) 2012 Ignacio Rodriguez
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,17 +13,9 @@
 from gi.repository import Gtk, GObject, Gdk
 
 from sugar3.activity import activity
-from sugar3 import profile
 from sugar3.graphics.toolbarbox import ToolbarBox
 from sugar3.activity.widgets import ActivityToolbarButton
-from sugar3.graphics.toolbarbox import ToolbarButton
 from sugar3.activity.widgets import StopButton
-from sugar3.graphics.alert import NotifyAlert
-from sugar3.graphics.objectchooser import ObjectChooser
-from sugar3.datastore import datastore
-from sugar3 import mime
-
-from gettext import gettext as _
 
 from game import Game
 from toolbar_utils import separator_factory
@@ -44,7 +36,7 @@ class LocoSugarActivity(activity.Activity):
         self._setup_toolbars()
 
         canvas = Gtk.DrawingArea()
-        canvas.set_size_request(Gdk.Screen.width(), \
+        canvas.set_size_request(Gdk.Screen.width(),
                                 Gdk.Screen.height())
         self.set_canvas(canvas)
         canvas.show()

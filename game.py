@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-#Copyright (c) 2012 Walter Bender
-#Copyright (c) 2012 Ignacio Rodriguez
+# Copyright (c) 2012 Walter Bender
+# Copyright (c) 2012 Ignacio Rodriguez
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -11,7 +11,6 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
-import cairo
 import os
 import glob
 from random import uniform
@@ -403,7 +402,6 @@ class Game():
         if self.level not in [4, 5, 6]:
             return True
         k = Gdk.keyval_name(event.keyval)
-        u = Gdk.keyval_to_unicode(event.keyval)
 
         if self._waiting_for_enter:
             if k == 'Return':
