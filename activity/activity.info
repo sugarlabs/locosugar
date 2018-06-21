@@ -7,6 +7,6 @@ exec = sugar-activity LocoSugarActivity.LocoSugarActivity
 icon = activity-loco
 show_launcher = yes
 summary = Learn how to use the mouse and keyboard.
-tags = Teacher;Programing
+tags = Teacher;Programming
 url = https://help.sugarlabs.org/en/locosugar.html
 repository = https://github.com/sugarlabs/locosugar
