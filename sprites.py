@@ -78,14 +78,14 @@ from builtins import str
 from builtins import range
 from past.utils import old_div
 from builtins import object
-
+import gi
+gi.require_version('PangoCairo', '1.0')
 
 # <-----------------------GTK3----------->#
 from gi.repository import GdkPixbuf, Gdk
 from gi.repository import Pango, PangoCairo
 import cairo
-import gi
-gi.require_version('PangoCairo', '1.0')
+
 
 
 class Sprites(object):
