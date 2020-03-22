@@ -1,3 +1,4 @@
+from builtins import str
 # Copyright (c) 2012 Walter Bender
 # Copyright (c) 2012 Ignacio Rodriguez
 
@@ -9,8 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
-
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Gdk
+
 
 from sugar3.activity import activity
 from sugar3.graphics.toolbarbox import ToolbarBox
