@@ -11,8 +11,9 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 from past.utils import old_div
 import gi
+
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 import os
 import glob
 from random import uniform
@@ -20,9 +21,11 @@ from random import uniform
 from gettext import gettext as _
 
 import logging
+
 _logger = logging.getLogger('loco-activity')
 
 from sugar3.graphics import style
+
 GRID_CELL_SIZE = style.GRID_CELL_SIZE
 
 from sprites import Sprites, Sprite
@@ -60,12 +63,12 @@ DEAD_DICTS = [{'A': u'À', 'E': u'È', 'I': u'Ì', 'O': u'Ò', 'U': u'Ù',
               {'A': u'Á', 'E': u'É', 'I': u'Í', 'O': u'Ó', 'U': u'Ú',
                'a': u'á', 'e': u'é', 'i': u'í', 'o': u'ó', 'u': u'ú'},
               {'A': u'Â', 'E': u'Ê', 'I': u'Î', 'O': u'Ô', 'U': u'Û',
-               'a': u'Â',  'e': u'ê', 'i': u'î', 'o': u'ô', 'u': u'û'},
+               'a': u'Â', 'e': u'ê', 'i': u'î', 'o': u'ô', 'u': u'û'},
               {'A': u'Ä', 'O': u'Õ', 'N': u'Ñ', 'U': u'Ũ',
                'a': u'ä', 'o': u'õ', 'n': u'ñ', 'u': u'ũ'},
               {'A': u'Ã', 'E': u'Ë', 'I': u'Ï', 'O': u'Ö', 'U': u'Ü',
                'a': u'ã', 'e': u'ë', 'i': u'ï', 'o': u'ö', 'u': u'ü'},
-              {'A': u'Å', 'a':  u'å'}]
+              {'A': u'Å', 'a': u'å'}]
 
 
 class Game(object):
@@ -120,9 +123,9 @@ class Game(object):
         self._backgrounds = []
         for bg in self._BG:
             self._backgrounds.append(Sprite(
-                    self._sprites, 0, 0, GdkPixbuf.Pixbuf.new_from_file_at_size(
-                        os.path.join(self._path, 'images', bg),
-                        self._width, self._height)))
+                self._sprites, 0, 0, GdkPixbuf.Pixbuf.new_from_file_at_size(
+                    os.path.join(self._path, 'images', bg),
+                    self._width, self._height)))
             self._backgrounds[-1].type = 'background'
             self._backgrounds[-1].hide()
 
@@ -137,7 +140,7 @@ class Game(object):
         self._panel.hide()
 
         self._LOCOS = glob.glob(
-                os.path.join(self._path, 'images', 'loco*.png'))
+            os.path.join(self._path, 'images', 'loco*.png'))
         self._loco_cards = []
         for loco in self._LOCOS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -147,7 +150,7 @@ class Game(object):
         self._loco_dim = (int(150 * self._scale), int(208 * self._scale))
 
         self._MEN = glob.glob(
-                os.path.join(self._path, 'images', 'man*.png'))
+            os.path.join(self._path, 'images', 'man*.png'))
         self._man_cards = []
         for loco in self._MEN:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -156,7 +159,7 @@ class Game(object):
             self._man_cards[-1].type = 'loco'
 
         self._TAUNTS = glob.glob(
-                os.path.join(self._path, 'images', 'taunt*.png'))
+            os.path.join(self._path, 'images', 'taunt*.png'))
         self._taunt_cards = []
         for loco in self._TAUNTS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -165,7 +168,7 @@ class Game(object):
             self._taunt_cards[-1].type = 'loco'
 
         self._GHOSTS = glob.glob(
-                os.path.join(self._path, 'images', 'ghost*.png'))
+            os.path.join(self._path, 'images', 'ghost*.png'))
         self._ghost_cards = []
         for loco in self._GHOSTS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -190,21 +193,21 @@ class Game(object):
         self._all_clear()
 
     def _time_increment(self):
-        ''' Track seconds since start_time. '''
-        self._seconds = int(GObject.get_current_time() - self._start_time)
-        self.timer_id = GObject.timeout_add(1000, self._time_increment)
+        """ Track seconds since start_time. """
+        self._seconds = int(GLib.get_current_time() - self._start_time)
+        self.timer_id = GLib.timeout_add(1000, self._time_increment)
 
     def _timer_reset(self):
-        ''' Reset the timer for each level '''
-        self._start_time = GObject.get_current_time()
+        """ Reset the timer for each level """
+        self._start_time = GLib.get_current_time()
         if self._timer_id is not None:
-            GObject.source_remove(self._timer_id)
+            GLib.source_remove(self._timer_id)
             self._timer_id = None
         self.score += self._seconds
         self._time_increment()
 
     def _all_clear(self):
-        ''' Things to reinitialize when starting up a new game. '''
+        """ Things to reinitialize when starting up a new game. """
         for p in self._loco_cards:
             p.hide()
         for p in self._man_cards:
@@ -232,18 +235,18 @@ class Game(object):
             x += int(old_div(self._loco_dim[0], 2.))
         self.score = 0
         self._parent.unfullscreen()
-        GObject.idle_add(play_audio_from_file, self, os.path.join(
-                self._path, 'sounds', 'sonar.ogg'))
-        GObject.timeout_add(5000, self.new_game, True)
+        GLib.idle_add(play_audio_from_file, self, os.path.join(
+            self._path, 'sounds', 'sonar.ogg'))
+        GLib.timeout_add(5000, self.new_game, True)
 
     def new_game(self, first_time):
-        ''' Start a new game at the current level. '''
+        """ Start a new game at the current level. """
         self._first_time = first_time
         self._clicked = False
 
         # It may be time to advance to the next level.
         if (self.level == 6 and self._counter == len(MSGS)) or \
-           self._counter > 4:
+                self._counter > 4:
             self._first_time = True
             self.level += 1
             self._counter = 0
@@ -261,7 +264,7 @@ class Game(object):
             self._panel.set_label(LABELS[self.level])
             self._panel.set_layer(PANEL_LAYER)
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'drip.ogg'))
+                self._path, 'sounds', 'drip.ogg'))
             self._timer_reset()
 
         if self.level == 0:
@@ -270,15 +273,15 @@ class Game(object):
             self._loco_quadrant %= 4
             x, y = self._quad_to_xy(self._loco_quadrant)
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'bark.ogg'))
+                self._path, 'sounds', 'bark.ogg'))
             self._loco_cards[0].move((x, y))
             self._loco_pos = (x, y)
         elif self.level == 1:
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'glass.ogg'))
+                self._path, 'sounds', 'glass.ogg'))
         elif self.level == 2:
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'glass.ogg'))
+                self._path, 'sounds', 'glass.ogg'))
             # Place some Locos on the canvas
             for i in range(self._counter + 1):
                 self._loco_quadrant += int(uniform(1, 4))
@@ -289,7 +292,7 @@ class Game(object):
                 self._sticky_cards[i].set_layer(LOCO_LAYER)
         elif self.level == 3:
             play_audio_from_file(self, os.path.join(
-                    self._path, 'sounds', 'bark.ogg'))
+                self._path, 'sounds', 'bark.ogg'))
             # Place some Locos on the left-side of the canvas
             for i in range(self._counter + 1):
                 self._loco_quadrant = int(uniform(2, 4))
@@ -362,7 +365,7 @@ class Game(object):
         else:
             self._taunt_cards[i % n].move((x, y))
             self._taunt_cards[i % n].set_layer(LOCO_LAYER)
-            self._timeout_id = GObject.timeout_add(
+            self._timeout_id = GLib.timeout_add(
                 200, self._taunt, x, y, i + 1)
 
     def _move_loco(self, x, y, i):
@@ -394,11 +397,11 @@ class Game(object):
             self._loco_pos = (cx, cy)
             self._loco_cards[j].set_layer(LOCO_LAYER)
             self._loco_cards[i].hide()
-            self._timeout_id = GObject.timeout_add(
+            self._timeout_id = GLib.timeout_add(
                 self._pause, self._move_loco, x, y, j)
 
     def _keypress_cb(self, area, event):
-        ''' Keypress '''
+        """ Keypress """
         # Games 4, 5, and 6 use the keyboard
         print('keypress event')
         if self.level not in [4, 5, 6]:
@@ -411,7 +414,7 @@ class Game(object):
                 self._panel.hide()
                 self._counter += 1
                 self._correct = 0
-                GObject.timeout_add(1000, self.new_game, False)
+                GLib.timeout_add(1000, self.new_game, False)
             return
 
         if k in NOISE_KEYS or k in WHITE_SPACE:
@@ -460,7 +463,7 @@ class Game(object):
                 self._panel.set_layer(PANEL_LAYER)
                 self._waiting_for_delete = True
                 play_audio_from_file(self, os.path.join(
-                        self._path, 'sounds', 'glass.ogg'))
+                    self._path, 'sounds', 'glass.ogg'))
         else:
             for i in range(n):
                 if self._sticky_cards[i].labels[0] == k:
@@ -470,8 +473,8 @@ class Game(object):
 
         # Test for end condition
         if self.level == 6 and \
-           self._correct == len(MSGS[self._counter]) - \
-                            MSGS[self._counter].count(' '):
+                self._correct == len(MSGS[self._counter]) - \
+                MSGS[self._counter].count(' '):
             c = 0
             for i in range(len(MSGS[self._counter])):
                 if MSGS[self._counter][i] == ' ':
@@ -482,8 +485,8 @@ class Game(object):
             self._panel.set_label(ALERTS[0])
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
-            GObject.idle_add(play_audio_from_file, self, os.path.join(
-                    self._path, 'sounds', 'drip.ogg'))
+            GLib.idle_add(play_audio_from_file, self, os.path.join(
+                self._path, 'sounds', 'drip.ogg'))
             return
         else:
             for i in range(n):
@@ -491,10 +494,10 @@ class Game(object):
                     return True
         self._counter += 1
         self._correct = 0
-        GObject.timeout_add(1000, self.new_game, False)
+        GLib.timeout_add(1000, self.new_game, False)
 
     def _mouse_move_cb(self, win, event):
-        ''' Move the mouse. '''
+        """ Move the mouse. """
         # Games 0, 3, 4, and 5 use move events
         x, y = list(map(int, event.get_coords()))
         if self._seconds > 1:
@@ -506,7 +509,7 @@ class Game(object):
             if dx * dx + dy * dy < 200:
                 self._clicked = True
                 if self._timeout_id is not None:
-                    GObject.source_remove(self._timeout_id)
+                    GLib.source_remove(self._timeout_id)
                 # Play again
                 self._all_clear()
                 self._man_cards[0].move((x - int(old_div(self._loco_dim[0], 2.)),
@@ -514,7 +517,7 @@ class Game(object):
                 self._man_cards[0].set_layer(LOCO_LAYER)
                 self._correct += 1
                 self._counter += 1
-                GObject.timeout_add(1000, self.new_game, False)
+                GLib.timeout_add(1000, self.new_game, False)
         elif self.level in [4, 5]:
             # For Game 4 and 5, we allow dragging
             if self._press is None:
@@ -547,7 +550,7 @@ class Game(object):
             if self._correct == self._counter + 1:
                 self._counter += 1
                 self._correct = 0
-                GObject.timeout_add(2000, self.new_game, False)
+                GLib.timeout_add(2000, self.new_game, False)
         self._press = None
         self._drag_pos = [0, 0]
         return True
@@ -577,15 +580,15 @@ class Game(object):
             self._counter += 1
             self._correct += 1
             if self._timeout_id is not None:
-                GObject.source_remove(self._timeout_id)
-            GObject.timeout_add(2000, self.new_game, False)
+                GLib.source_remove(self._timeout_id)
+            GLib.timeout_add(2000, self.new_game, False)
         elif self.level == 2:
             spr.set_shape(self._ghost_pixbuf)
             spr.type = 'ghost'
             if self._correct == self._counter:
                 self._counter += 1
                 self._correct = 0
-                GObject.timeout_add(2000, self.new_game, False)
+                GLib.timeout_add(2000, self.new_game, False)
             else:
                 self._correct += 1
         elif self.level in [3, 4, 5]:
@@ -602,7 +605,7 @@ class Game(object):
         # Restrict Cairo to the exposed area
         cr = self._canvas.window.cairo_create()
         cr.rectangle(event.area.x, event.area.y,
-                event.area.width, event.area.height)
+                     event.area.width, event.area.height)
         cr.clip()
         # Refresh sprite list
         self._sprites.redraw_sprites(cr=cr)

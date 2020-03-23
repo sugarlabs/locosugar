@@ -11,7 +11,7 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GLib, Gdk
 
 
 from sugar3.activity import activity
@@ -50,7 +50,7 @@ class LocoSugarActivity(activity.Activity):
         if 'score' in self.metadata:
             self._game.score = int(self.metadata['score'])
         self.fullscreen()
-        GObject.timeout_add(1000, self._game.new_game, True)
+        GLib.timeout_add(1000, self._game.new_game, True)
 
     def _setup_toolbars(self):
         ''' Setup the toolbars. '''

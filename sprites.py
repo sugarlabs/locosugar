@@ -77,13 +77,13 @@ def svg_str_to_pixbuf(svg_string):
 from past.utils import old_div
 from builtins import object
 import gi
+
 gi.require_version('PangoCairo', '1.0')
 
 # <-----------------------GTK3----------->#
 from gi.repository import GdkPixbuf, Gdk
 from gi.repository import Pango, PangoCairo
 import cairo
-
 
 
 class Sprites(object):
@@ -101,14 +101,14 @@ class Sprites(object):
 
     def get_sprite(self, i):
         ''' Return a sprint from the array '''
-        if i < 0 or i > len(self.list)-1:
-            return(None)
+        if i < 0 or i > len(self.list) - 1:
+            return (None)
         else:
-            return(self.list[i])
+            return (self.list[i])
 
     def length_of_list(self):
         ''' How many sprites are there? '''
-        return(len(self.list))
+        return (len(self.list))
 
     def append_to_list(self, spr):
         ''' Append a new sprite to the end of the list. '''
@@ -385,12 +385,12 @@ class Sprite(object):
             if w > my_width:
                 if self._rescale[i]:
                     self._fd.set_size(
-                            int(self._scale[i] * Pango.SCALE * my_width / w))
+                        int(self._scale[i] * Pango.SCALE * my_width / w))
                     pl.set_font_description(self._fd)
                     w = old_div(pl.get_size()[0], Pango.SCALE)
                 else:
                     j = len(self.labels[i]) - 1
-                    while(w > my_width and j > 0):
+                    while (w > my_width and j > 0):
                         pl.set_text(
                             "…" + self.labels[i][len(self.labels[i]) - j:], -1)
                         self._fd.set_size(int(self._scale[i] * Pango.SCALE))
@@ -446,7 +446,7 @@ class Sprite(object):
 
     def label_left_top(self):
         ''' Return the upper-left corner of the label safe zone '''
-        return(self._margins[0], self._margins[1])
+        return (self._margins[0], self._margins[1])
 
     def get_pixel(self, pos, i=0):
         ''' Return the pixl at (x, y) '''
@@ -454,16 +454,16 @@ class Sprite(object):
         x = x - self.rect[0]
         y = y - self.rect[1]
         if y > self.images[i].get_height() - 1:
-            return(-1, -1, -1, -1)
+            return -1, -1, -1, -1
         try:
             array = self.images[i].get_pixels()
             if array is not None:
                 offset = (y * self.images[i].get_width() + x) * 4
-                r, g, b, a = array[offset], array[offset + 1],\
+                r, g, b, a = array[offset], array[offset + 1], \
                              array[offset + 2], array[offset + 3]
-                return(r, g, b, a)
+                return r, g, b, a
             else:
-                return(-1, -1, -1, -1)
+                return -1, -1, -1, -1
         except IndexError:
             print("Index Error: %d %d" % (len(array), offset))
-            return(-1, -1, -1, -1)
+            return -1, -1, -1, -1

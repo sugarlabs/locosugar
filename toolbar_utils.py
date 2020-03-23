@@ -19,7 +19,7 @@ from sugar3.graphics.combobox import ComboBox
 
 def combo_factory(combo_array, toolbar, callback, cb_arg=None,
                   tooltip=None, default=None):
-    '''Factory for making a toolbar combo box'''
+    """Factory for making a toolbar combo box"""
     combo = ComboBox()
     if tooltip is not None and hasattr(combo, 'set_tooltip_text'):
         combo.set_tooltip_text(tooltip)
@@ -43,7 +43,7 @@ def combo_factory(combo_array, toolbar, callback, cb_arg=None,
 
 
 def entry_factory(default_string, toolbar, tooltip=None, max=3):
-    ''' Factory for adding a text box to a toolbar '''
+    """ Factory for adding a text box to a toolbar """
     entry = Gtk.Entry()
     entry.set_text(default_string)
     if tooltip is not None and hasattr(entry, 'set_tooltip_text'):
@@ -62,7 +62,7 @@ def entry_factory(default_string, toolbar, tooltip=None, max=3):
 
 def button_factory(icon_name, toolbar, callback, cb_arg=None, tooltip=None,
                    accelerator=None):
-    '''Factory for making tooplbar buttons'''
+    """Factory for making tooplbar buttons"""
     button = ToolButton(icon_name)
     if tooltip is not None:
         button.set_tooltip(tooltip)
@@ -102,7 +102,7 @@ def radio_factory(name, toolbar, callback, cb_arg=None, tooltip=None,
 
 
 def label_factory(toolbar, label_text, width=None):
-    ''' Factory for adding a label to a toolbar '''
+    """ Factory for adding a label to a toolbar """
     label = Gtk.Label(label_text)
     label.set_line_wrap(True)
     if width is not None:
@@ -119,7 +119,7 @@ def label_factory(toolbar, label_text, width=None):
 
 
 def separator_factory(toolbar, expand=False, visible=True):
-    ''' add a separator to a toolbar '''
+    """ add a separator to a toolbar """
     separator = Gtk.SeparatorToolItem()
     separator.props.draw = visible
     separator.set_expand(expand)
@@ -131,7 +131,7 @@ def separator_factory(toolbar, expand=False, visible=True):
 
 
 def image_factory(image, toolbar, tooltip=None):
-    ''' Add an image to the toolbar '''
+    """ Add an image to the toolbar """
     img = Gtk.Image()
     img.set_from_pixbuf(image)
     img_tool = Gtk.ToolItem()
