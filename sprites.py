@@ -74,8 +74,6 @@ def svg_str_to_pixbuf(svg_string):
     pixbuf = pl.get_pixbuf()
     return pixbuf
 '''
-from builtins import str
-from builtins import range
 from past.utils import old_div
 from builtins import object
 import gi

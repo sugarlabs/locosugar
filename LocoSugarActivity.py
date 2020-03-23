@@ -1,4 +1,3 @@
-from builtins import str
 # Copyright (c) 2012 Walter Bender
 # Copyright (c) 2012 Ignacio Rodriguez
 
