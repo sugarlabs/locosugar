@@ -10,7 +10,7 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 import os
 import glob
 from random import uniform
@@ -189,14 +189,14 @@ class Game():
 
     def _time_increment(self):
         ''' Track seconds since start_time. '''
-        self._seconds = int(GObject.get_current_time() - self._start_time)
-        self.timer_id = GObject.timeout_add(1000, self._time_increment)
+        self._seconds = int(GLib.get_current_time() - self._start_time)
+        self.timer_id = GLib.timeout_add(1000, self._time_increment)
 
     def _timer_reset(self):
         ''' Reset the timer for each level '''
-        self._start_time = GObject.get_current_time()
+        self._start_time = GLib.get_current_time()
         if self._timer_id is not None:
-            GObject.source_remove(self._timer_id)
+            GLib.source_remove(self._timer_id)
             self._timer_id = None
         self.score += self._seconds
         self._time_increment()
@@ -230,9 +230,9 @@ class Game():
             x += int(self._loco_dim[0] / 2.)
         self.score = 0
         self._parent.unfullscreen()
-        GObject.idle_add(play_audio_from_file, self, os.path.join(
+        GLib.idle_add(play_audio_from_file, self, os.path.join(
                 self._path, 'sounds', 'sonar.ogg'))
-        GObject.timeout_add(5000, self.new_game, True)
+        GLib.timeout_add(5000, self.new_game, True)
 
     def new_game(self, first_time):
         ''' Start a new game at the current level. '''
@@ -360,7 +360,7 @@ class Game():
         else:
             self._taunt_cards[i % n].move((x, y))
             self._taunt_cards[i % n].set_layer(LOCO_LAYER)
-            self._timeout_id = GObject.timeout_add(
+            self._timeout_id = GLib.timeout_add(
                 200, self._taunt, x, y, i + 1)
 
     def _move_loco(self, x, y, i):
@@ -392,7 +392,7 @@ class Game():
             self._loco_pos = (cx, cy)
             self._loco_cards[j].set_layer(LOCO_LAYER)
             self._loco_cards[i].hide()
-            self._timeout_id = GObject.timeout_add(
+            self._timeout_id = GLib.timeout_add(
                 self._pause, self._move_loco, x, y, j)
 
     def _keypress_cb(self, area, event):
@@ -409,7 +409,7 @@ class Game():
                 self._panel.hide()
                 self._counter += 1
                 self._correct = 0
-                GObject.timeout_add(1000, self.new_game, False)
+                GLib.timeout_add(1000, self.new_game, False)
             return
 
         if k in NOISE_KEYS or k in WHITE_SPACE:
@@ -480,7 +480,7 @@ class Game():
             self._panel.set_label(ALERTS[0])
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
-            GObject.idle_add(play_audio_from_file, self, os.path.join(
+            GLib.idle_add(play_audio_from_file, self, os.path.join(
                     self._path, 'sounds', 'drip.ogg'))
             return
         else:
@@ -489,7 +489,7 @@ class Game():
                     return True
         self._counter += 1
         self._correct = 0
-        GObject.timeout_add(1000, self.new_game, False)
+        GLib.timeout_add(1000, self.new_game, False)
 
     def _mouse_move_cb(self, win, event):
         ''' Move the mouse. '''
@@ -504,7 +504,7 @@ class Game():
             if dx * dx + dy * dy < 200:
                 self._clicked = True
                 if self._timeout_id is not None:
-                    GObject.source_remove(self._timeout_id)
+                    GLib.source_remove(self._timeout_id)
                 # Play again
                 self._all_clear()
                 self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
@@ -512,7 +512,7 @@ class Game():
                 self._man_cards[0].set_layer(LOCO_LAYER)
                 self._correct += 1
                 self._counter += 1
-                GObject.timeout_add(1000, self.new_game, False)
+                GLib.timeout_add(1000, self.new_game, False)
         elif self.level in [4, 5]:
             # For Game 4 and 5, we allow dragging
             if self._press is None:
@@ -545,7 +545,7 @@ class Game():
             if self._correct == self._counter + 1:
                 self._counter += 1
                 self._correct = 0
-                GObject.timeout_add(2000, self.new_game, False)
+                GLib.timeout_add(2000, self.new_game, False)
         self._press = None
         self._drag_pos = [0, 0]
         return True
@@ -575,15 +575,15 @@ class Game():
             self._counter += 1
             self._correct += 1
             if self._timeout_id is not None:
-                GObject.source_remove(self._timeout_id)
-            GObject.timeout_add(2000, self.new_game, False)
+                GLib.source_remove(self._timeout_id)
+            GLib.timeout_add(2000, self.new_game, False)
         elif self.level == 2:
             spr.set_shape(self._ghost_pixbuf)
             spr.type = 'ghost'
             if self._correct == self._counter:
                 self._counter += 1
                 self._correct = 0
-                GObject.timeout_add(2000, self.new_game, False)
+                GLib.timeout_add(2000, self.new_game, False)
             else:
                 self._correct += 1
         elif self.level in [3, 4, 5]:
