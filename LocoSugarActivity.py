@@ -9,8 +9,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
-
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GLib, Gdk
 
 from sugar3.activity import activity
 from sugar3.graphics.toolbarbox import ToolbarBox
@@ -48,7 +47,7 @@ class LocoSugarActivity(activity.Activity):
         if 'score' in self.metadata:
             self._game.score = int(self.metadata['score'])
         self.fullscreen()
-        GObject.timeout_add(1000, self._game.new_game, True)
+        GLib.timeout_add(1000, self._game.new_game, True)
 
     def _setup_toolbars(self):
         ''' Setup the toolbars. '''
