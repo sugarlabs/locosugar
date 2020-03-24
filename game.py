@@ -9,7 +9,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
-
+import gi
+gi.require_version('Gtk','3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 import os
 import glob
@@ -51,19 +52,19 @@ WHITE_SPACE = ['space', 'Tab']
 PUNCTUATION = {'period': '.', 'comma': ',', 'question': '?', 'exclam': '!',
                'colon': ':', 'semicolon': ';', 'exclamdown': '¡',
                'questiondown': '¿'}
-SPECIAL = {'ntilde': u'ñ', 'Ntilde': u'Ñ', 'ccedilla': u'ç', 'Ccedilla': u'Ç'}
+SPECIAL = {'ntilde': 'ñ', 'Ntilde': 'Ñ', 'ccedilla': 'ç', 'Ccedilla': 'Ç'}
 DEAD_KEYS = ['grave', 'acute', 'circumflex', 'tilde', 'diaeresis', 'abovering']
-DEAD_DICTS = [{'A': u'À', 'E': u'È', 'I': u'Ì', 'O': u'Ò', 'U': u'Ù',
-               'a': u'à', 'e': u'è', 'i': u'Ì', 'o': u'ò', 'u': u'ù'},
-              {'A': u'Á', 'E': u'É', 'I': u'Í', 'O': u'Ó', 'U': u'Ú',
-               'a': u'á', 'e': u'é', 'i': u'í', 'o': u'ó', 'u': u'ú'},
-              {'A': u'Â', 'E': u'Ê', 'I': u'Î', 'O': u'Ô', 'U': u'Û',
-               'a': u'Â',  'e': u'ê', 'i': u'î', 'o': u'ô', 'u': u'û'},
-              {'A': u'Ä', 'O': u'Õ', 'N': u'Ñ', 'U': u'Ũ',
-               'a': u'ä', 'o': u'õ', 'n': u'ñ', 'u': u'ũ'},
-              {'A': u'Ã', 'E': u'Ë', 'I': u'Ï', 'O': u'Ö', 'U': u'Ü',
-               'a': u'ã', 'e': u'ë', 'i': u'ï', 'o': u'ö', 'u': u'ü'},
-              {'A': u'Å', 'a':  u'å'}]
+DEAD_DICTS = [{'A': 'À', 'E': 'È', 'I': 'Ì', 'O': 'Ò', 'U': 'Ù',
+               'a': 'à', 'e': 'è', 'i': 'Ì', 'o': 'ò', 'u': 'ù'},
+              {'A': 'Á', 'E': 'É', 'I': 'Í', 'O': 'Ó', 'U': 'Ú',
+               'a': 'á', 'e': 'é', 'i': 'í', 'o': 'ó', 'u': 'ú'},
+              {'A': 'Â', 'E': 'Ê', 'I': 'Î', 'O': 'Ô', 'U': 'Û',
+               'a': 'Â',  'e': 'ê', 'i': 'î', 'o': 'ô', 'u': 'û'},
+              {'A': 'Ä', 'O': 'Õ', 'N': 'Ñ', 'U': 'Ũ',
+               'a': 'ä', 'o': 'õ', 'n': 'ñ', 'u': 'ũ'},
+              {'A': 'Ã', 'E': 'Ë', 'I': 'Ï', 'O': 'Ö', 'U': 'Ü',
+               'a': 'ã', 'e': 'ë', 'i': 'ï', 'o': 'ö', 'u': 'ü'},
+              {'A': 'Å', 'a':  'å'}]
 
 
 class Game():
@@ -89,7 +90,7 @@ class Game():
 
         self._width = Gdk.Screen.width()
         self._height = Gdk.Screen.height()
-        self._scale = self._width / 1200.
+        self._scale = self._width // 1200.
         self._first_time = True
         self._loco_pos = (0, 0)
         self._loco_dim = (0, 0)
@@ -221,13 +222,13 @@ class Game():
     def _show_time(self):
         self.level = 0
         self._all_clear()
-        x = int(self._width / 4.)
-        y = int(self._height / 8.)
+        x = int(self._width // 4.)
+        y = int(self._height // 8.)
         for i in range(len(str(self.score))):
             self._sticky_cards[i].move((x, y))
             self._sticky_cards[i].set_layer(LOCO_LAYER)
             self._sticky_cards[i].set_label(str(self.score)[i])
-            x += int(self._loco_dim[0] / 2.)
+            x += int(self._loco_dim[0] // 2.)
         self.score = 0
         self._parent.unfullscreen()
         GLib.idle_add(play_audio_from_file, self, os.path.join(
@@ -331,7 +332,7 @@ class Game():
                     self._sticky_cards[c].set_layer(LOCO_LAYER)
                     self._sticky_cards[c].set_label(MSGS[self._counter][i])
                     c += 1
-                    x += int(self._loco_dim[0] / 2.)
+                    x += int(self._loco_dim[0] // 2.)
 
         if self.level in [0, 1]:
             self._loco_quadrant += int(uniform(1, 4))
@@ -343,12 +344,12 @@ class Game():
                 self._taunt(x, y, 0)
 
     def _quad_to_xy(self, q):
-        x = int(max(0, (self._width / 2.) * uniform(0, 1) - self._loco_dim[0]))
+        x = int(max(0, (self._width // 2.) * uniform(0, 1) - self._loco_dim[0]))
         if q in [0, 1]:
-            x += int(self._width / 2.)
-        y = int(max(0, (self._height / 2.) * uniform(0, 1) - self._loco_dim[1]))
+            x += int(self._width // 2.)
+        y = int(max(0, (self._height // 2.) * uniform(0, 1) - self._loco_dim[1]))
         if q in [1, 2]:
-            y += int(self._height / 2.)
+            y += int(self._height // 2.)
         return x, y
 
     def _taunt(self, x, y, i):
@@ -398,7 +399,7 @@ class Game():
     def _keypress_cb(self, area, event):
         ''' Keypress '''
         # Games 4, 5, and 6 use the keyboard
-        print 'keypress event'
+        print('keypress event')
         if self.level not in [4, 5, 6]:
             return True
         k = Gdk.keyval_name(event.keyval)
@@ -494,21 +495,21 @@ class Game():
     def _mouse_move_cb(self, win, event):
         ''' Move the mouse. '''
         # Games 0, 3, 4, and 5 use move events
-        x, y = map(int, event.get_coords())
+        x, y = list(map(int, event.get_coords()))
         if self._seconds > 1:
             self._panel.hide()
         if not self._clicked and self.level == 0:
             # For Game 0, see if the mouse is on the Loco
-            dx = x - self._loco_pos[0] - self._loco_dim[0] / 2.
-            dy = y - self._loco_pos[1] - self._loco_dim[1] / 2.
+            dx = x - self._loco_pos[0] - self._loco_dim[0] // 2.
+            dy = y - self._loco_pos[1] - self._loco_dim[1] // 2.
             if dx * dx + dy * dy < 200:
                 self._clicked = True
                 if self._timeout_id is not None:
                     GLib.source_remove(self._timeout_id)
                 # Play again
                 self._all_clear()
-                self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
-                                         y - int(self._loco_dim[1] / 2.)))
+                self._man_cards[0].move((x - int(self._loco_dim[0] // 2.),
+                                         y - int(self._loco_dim[1] // 2.)))
                 self._man_cards[0].set_layer(LOCO_LAYER)
                 self._correct += 1
                 self._counter += 1
@@ -531,7 +532,7 @@ class Game():
             dy = y - self._drag_pos[1]
             self._press.move_relative((dx, dy))
             self._drag_pos = [x, y]
-            if x > self._width / 2.:
+            if x > self._width // 2.:
                 self._press.set_shape(self._man_pixbuf)
                 if self._press.type == 'loco':
                     self._correct += 1
@@ -552,7 +553,7 @@ class Game():
 
     def _button_press_cb(self, win, event):
         self._press = None
-        x, y = map(int, event.get_coords())
+        x, y = list(map(int, event.get_coords()))
         if self.level == 0:
             return
         spr = self._sprites.find_sprite((x, y))
@@ -568,8 +569,8 @@ class Game():
         # Games 1, 2, and 3 involve clicks; Games 4 and 5 allow click to drag
         if self.level == 1:
             self._all_clear()
-            self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
-                                     y - int(self._loco_dim[1] / 2.)))
+            self._man_cards[0].move((x - int(self._loco_dim[0] // 2.),
+                                     y - int(self._loco_dim[1] // 2.)))
             self._man_cards[0].set_layer(LOCO_LAYER)
             self._clicked = True
             self._counter += 1
