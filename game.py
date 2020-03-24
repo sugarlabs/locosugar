@@ -90,7 +90,7 @@ class Game():
 
         self._width = Gdk.Screen.width()
         self._height = Gdk.Screen.height()
-        self._scale = self._width // 1200.
+        self._scale = self._width / 1200.
         self._first_time = True
         self._loco_pos = (0, 0)
         self._loco_dim = (0, 0)
