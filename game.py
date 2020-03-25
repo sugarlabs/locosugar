@@ -222,13 +222,13 @@ class Game():
     def _show_time(self):
         self.level = 0
         self._all_clear()
-        x = int(self._width // 4.)
-        y = int(self._height // 8.)
+        x = int(self._width / 4.)
+        y = int(self._height / 8.)
         for i in range(len(str(self.score))):
             self._sticky_cards[i].move((x, y))
             self._sticky_cards[i].set_layer(LOCO_LAYER)
             self._sticky_cards[i].set_label(str(self.score)[i])
-            x += int(self._loco_dim[0] // 2.)
+            x += int(self._loco_dim[0] / 2.)
         self.score = 0
         self._parent.unfullscreen()
         GLib.idle_add(play_audio_from_file, self, os.path.join(
@@ -332,7 +332,7 @@ class Game():
                     self._sticky_cards[c].set_layer(LOCO_LAYER)
                     self._sticky_cards[c].set_label(MSGS[self._counter][i])
                     c += 1
-                    x += int(self._loco_dim[0] // 2.)
+                    x += int(self._loco_dim[0] / 2.)
 
         if self.level in [0, 1]:
             self._loco_quadrant += int(uniform(1, 4))
@@ -344,12 +344,12 @@ class Game():
                 self._taunt(x, y, 0)
 
     def _quad_to_xy(self, q):
-        x = int(max(0, (self._width // 2.) * uniform(0, 1) - self._loco_dim[0]))
+        x = int(max(0, (self._width / 2.) * uniform(0, 1) - self._loco_dim[0]))
         if q in [0, 1]:
-            x += int(self._width // 2.)
-        y = int(max(0, (self._height // 2.) * uniform(0, 1) - self._loco_dim[1]))
+            x += int(self._width / 2.)
+        y = int(max(0, (self._height / 2.) * uniform(0, 1) - self._loco_dim[1]))
         if q in [1, 2]:
-            y += int(self._height // 2.)
+            y += int(self._height / 2.)
         return x, y
 
     def _taunt(self, x, y, i):
@@ -399,7 +399,6 @@ class Game():
     def _keypress_cb(self, area, event):
         ''' Keypress '''
         # Games 4, 5, and 6 use the keyboard
-        print('keypress event')
         if self.level not in [4, 5, 6]:
             return True
         k = Gdk.keyval_name(event.keyval)
@@ -500,16 +499,16 @@ class Game():
             self._panel.hide()
         if not self._clicked and self.level == 0:
             # For Game 0, see if the mouse is on the Loco
-            dx = x - self._loco_pos[0] - self._loco_dim[0] // 2.
-            dy = y - self._loco_pos[1] - self._loco_dim[1] // 2.
+            dx = x - self._loco_pos[0] - self._loco_dim[0] / 2.
+            dy = y - self._loco_pos[1] - self._loco_dim[1] / 2.
             if dx * dx + dy * dy < 200:
                 self._clicked = True
                 if self._timeout_id is not None:
                     GLib.source_remove(self._timeout_id)
                 # Play again
                 self._all_clear()
-                self._man_cards[0].move((x - int(self._loco_dim[0] // 2.),
-                                         y - int(self._loco_dim[1] // 2.)))
+                self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
+                                         y - int(self._loco_dim[1] / 2.)))
                 self._man_cards[0].set_layer(LOCO_LAYER)
                 self._correct += 1
                 self._counter += 1
@@ -532,7 +531,7 @@ class Game():
             dy = y - self._drag_pos[1]
             self._press.move_relative((dx, dy))
             self._drag_pos = [x, y]
-            if x > self._width // 2.:
+            if x > self._width / 2.:
                 self._press.set_shape(self._man_pixbuf)
                 if self._press.type == 'loco':
                     self._correct += 1
@@ -569,8 +568,8 @@ class Game():
         # Games 1, 2, and 3 involve clicks; Games 4 and 5 allow click to drag
         if self.level == 1:
             self._all_clear()
-            self._man_cards[0].move((x - int(self._loco_dim[0] // 2.),
-                                     y - int(self._loco_dim[1] // 2.)))
+            self._man_cards[0].move((x - int(self._loco_dim[0] / 2.),
+                                     y - int(self._loco_dim[1] / 2.)))
             self._man_cards[0].set_layer(LOCO_LAYER)
             self._clicked = True
             self._counter += 1
