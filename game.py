@@ -230,7 +230,7 @@ class Game():
             self._sticky_cards[i].set_label(str(self.score)[i])
             x += int(self._loco_dim[0] / 2.)
         self.score = 0
-        self._parent.unfullscreen()
+        self._parent.fullscreen()
         GLib.idle_add(play_audio_from_file, self, os.path.join(
                 self._path, 'sounds', 'sonar.ogg'))
         GLib.timeout_add(5000, self.new_game, True)
