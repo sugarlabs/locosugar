@@ -25,7 +25,7 @@ from sugar3.graphics import style
 GRID_CELL_SIZE = style.GRID_CELL_SIZE
 
 from sprites import Sprites, Sprite
-from play_audio import play_audio_from_file
+from aplay import aplay
 
 LOCO_LAYER = 2
 PANEL_LAYER = 1
@@ -231,7 +231,7 @@ class Game():
             x += int(self._loco_dim[0] / 2.)
         self.score = 0
         self._parent.fullscreen()
-        GLib.idle_add(play_audio_from_file, self, os.path.join(
+        aplay.play(os.path.join(
                 self._path, 'sounds', 'sonar.ogg'))
         GLib.timeout_add(5000, self.new_game, True)
 
@@ -259,7 +259,7 @@ class Game():
             # The panel disappears on mouse movement
             self._panel.set_label(LABELS[self.level])
             self._panel.set_layer(PANEL_LAYER)
-            play_audio_from_file(self, os.path.join(
+            aplay.play(os.path.join(
                     self._path, 'sounds', 'drip.ogg'))
             self._timer_reset()
 
@@ -268,15 +268,15 @@ class Game():
             self._loco_quadrant += int(uniform(1, 4))
             self._loco_quadrant %= 4
             x, y = self._quad_to_xy(self._loco_quadrant)
-            play_audio_from_file(self, os.path.join(
+            aplay.play(os.path.join(
                     self._path, 'sounds', 'bark.ogg'))
             self._loco_cards[0].move((x, y))
             self._loco_pos = (x, y)
         elif self.level == 1:
-            play_audio_from_file(self, os.path.join(
+            aplay.play(os.path.join(
                     self._path, 'sounds', 'glass.ogg'))
         elif self.level == 2:
-            play_audio_from_file(self, os.path.join(
+            aplay.play(os.path.join(
                     self._path, 'sounds', 'glass.ogg'))
             # Place some Locos on the canvas
             for i in range(self._counter + 1):
@@ -287,7 +287,7 @@ class Game():
                 self._sticky_cards[i].type = 'loco'
                 self._sticky_cards[i].set_layer(LOCO_LAYER)
         elif self.level == 3:
-            play_audio_from_file(self, os.path.join(
+            aplay.play(os.path.join(
                     self._path, 'sounds', 'bark.ogg'))
             # Place some Locos on the left-side of the canvas
             for i in range(self._counter + 1):
@@ -457,7 +457,7 @@ class Game():
                 self._panel.set_label(ALERTS[1])
                 self._panel.set_layer(PANEL_LAYER)
                 self._waiting_for_delete = True
-                play_audio_from_file(self, os.path.join(
+                aplay.play(os.path.join(
                         self._path, 'sounds', 'glass.ogg'))
         else:
             for i in range(n):
@@ -480,7 +480,7 @@ class Game():
             self._panel.set_label(ALERTS[0])
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
-            GLib.idle_add(play_audio_from_file, self, os.path.join(
+            aplay.play(os.path.join(
                     self._path, 'sounds', 'drip.ogg'))
             return
         else:
