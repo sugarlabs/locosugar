@@ -118,10 +118,10 @@ class Game():
                     'background2.jpg']
         self._backgrounds = []
         for bg in self._BG:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(self._path, 'images', bg))
+            pixbuf = pixbuf.scale_simple(self._width, self._height, GdkPixbuf.InterpType.BILINEAR)
             self._backgrounds.append(Sprite(
-                    self._sprites, 0, 0, GdkPixbuf.Pixbuf.new_from_file_at_size(
-                        os.path.join(self._path, 'images', bg),
-                        self._width, self._height)))
+                self._sprites, 0, 0, pixbuf))
             self._backgrounds[-1].type = 'background'
             self._backgrounds[-1].hide()
 
