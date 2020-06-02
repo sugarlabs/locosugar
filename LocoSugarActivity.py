@@ -20,6 +20,7 @@ from sugar3.activity.widgets import StopButton
 
 from game import Game
 from toolbar_utils import separator_factory
+from aplay import aplay
 
 import logging
 _logger = logging.getLogger('loco-activity')
@@ -73,6 +74,10 @@ class LocoSugarActivity(activity.Activity):
         stop_button.props.accelerator = '<Ctrl>q'
         toolbox.toolbar.insert(stop_button, -1)
         stop_button.show()
+
+    def close(self, **kwargs):
+        aplay.close()
+        activity.Activity.close(self, **kwargs)
 
     def write_file(self, file_path):
         ''' Save the play level '''
