@@ -11,6 +11,7 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 import gi
 gi.require_version('Gtk','3.0')
+gi.require_version('Gdk', '3.0')
 from gi.repository import Gtk, GLib, Gdk
 
 from sugar3.activity import activity
