@@ -107,7 +107,7 @@ class Sprites:
         if i < 0 or i > len(self.list) - 1:
             return(None)
         else:
-            return(self.list[i])
+            return self.list[i]
 
     def length_of_list(self):
         ''' How many sprites are there? '''
@@ -127,7 +127,7 @@ class Sprites:
             self.list.insert(i, spr)
 
     def find_in_list(self, spr):
-        return (spr in self.list)
+        return spr in self.list
 
     def remove_from_list(self, spr):
         ''' Remove a sprite from the list. '''
@@ -244,11 +244,11 @@ class Sprite:
 
     def get_xy(self):
         ''' Return current (x, y) position '''
-        return (self.rect.x, self.rect.y)
+        return self.rect.x, self.rect.y
 
     def get_dimensions(self):
         ''' Return current size '''
-        return (self.rect.width, self.rect.height)
+        return self.rect.width, self.rect.height
 
     def get_layer(self):
         ''' Return current layer '''
@@ -465,7 +465,7 @@ class Sprite:
 
     def label_left_top(self):
         ''' Return the upper-left corner of the label safe zone '''
-        return(self._margins[0], self._margins[1])
+        return self._margins[0], self._margins[1]
 
     def get_pixel(self, pos, i=0):
         ''' Return the pixel at (x, y) '''
@@ -473,7 +473,7 @@ class Sprite:
         y = int(pos[1] - self.rect.y)
         if x < 0 or x > (self.rect.width - 1) or \
                 y < 0 or y > (self.rect.height - 1):
-            return(-1, -1, -1, -1)
+            return -1, -1, -1, -1
         # Create a new 1x1 cairo surface.
         cs = cairo.ImageSurface(cairo.FORMAT_RGB24, 1, 1)
         cr = cairo.Context(cs)
@@ -483,4 +483,4 @@ class Sprite:
         cr.fill()
         cs.flush()  # Ensure all the writing is done.
         pixels = cs.get_data()  # Read the pixel.
-        return (pixels[2], pixels[1], pixels[0], 0)
+        return pixels[2], pixels[1], pixels[0], 0
