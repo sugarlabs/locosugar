@@ -90,7 +90,8 @@ class Game():
 
         self._width = Gdk.Screen.width()
         self._height = Gdk.Screen.height()
-        self._scale = self._width / self._width
+        self._scale_x = self._width / 1200.0
+        self._scale_y = self._height / 900.0
         self._first_time = True
         self._loco_pos = (0, 0)
         self._loco_dim = (0, 0)
@@ -126,10 +127,10 @@ class Game():
             self._backgrounds[-1].hide()
 
         self._panel = Sprite(
-            self._sprites, int(400 * self._scale), int(400 * self._scale),
+            self._sprites, int(400 * self._scale_x), int(400 * self._scale_y),
             GdkPixbuf.Pixbuf.new_from_file_at_size(
                 os.path.join(self._path, 'images', 'ventana.png'),
-                int(720 * self._scale), int(370 * self._scale)))
+                int(720 * self._scale_x), int(370 * self._scale_y)))
         self._panel.type = 'panel'
         self._panel.set_label(LABELS[0])
         self._panel.set_label_attributes(20)
@@ -140,17 +141,17 @@ class Game():
         self._loco_cards = []
         for loco in self._LOCOS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                loco, int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale_x), int(208 * self._scale_y))
             self._loco_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._loco_cards[-1].type = 'loco'
-        self._loco_dim = (int(150 * self._scale), int(208 * self._scale))
+        self._loco_dim = (int(150 * self._scale_x), int(208 * self._scale_y))
 
         self._MEN = glob.glob(
                 os.path.join(self._path, 'images', 'man*.png'))
         self._man_cards = []
         for loco in self._MEN:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                loco, int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale_x), int(208 * self._scale_y))
             self._man_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._man_cards[-1].type = 'loco'
 
@@ -159,7 +160,7 @@ class Game():
         self._taunt_cards = []
         for loco in self._TAUNTS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                loco, int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale_x), int(208 * self._scale_y))
             self._taunt_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._taunt_cards[-1].type = 'loco'
 
@@ -168,17 +169,17 @@ class Game():
         self._ghost_cards = []
         for loco in self._GHOSTS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                loco, int(150 * self._scale), int(208 * self._scale))
+                loco, int(150 * self._scale_x), int(208 * self._scale_y))
             self._ghost_cards.append(Sprite(self._sprites, 0, 0, pixbuf))
             self._ghost_cards[-1].type = 'loco'
 
         self._sticky_cards = []
         self._loco_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._LOCOS[0], int(150 * self._scale), int(208 * self._scale))
+            self._LOCOS[0], int(150 * self._scale_x), int(208 * self._scale_y))
         self._man_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._MEN[0], int(150 * self._scale), int(208 * self._scale))
+            self._MEN[0], int(150 * self._scale_x), int(208 * self._scale_y))
         self._ghost_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._GHOSTS[0], int(150 * self._scale), int(208 * self._scale))
+            self._GHOSTS[0], int(150 * self._scale_x), int(208 * self._scale_y))
         for i in range(len(MSGS[1])):  # Check re i18n
             self._sticky_cards.append(Sprite(self._sprites, 0, 0,
                                              self._loco_pixbuf))
