@@ -2,65 +2,67 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-24 12:03-0400\n"
-"PO-Revision-Date: 2012-05-27 06:39+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2020-07-19 14:44+0000\n"
+"Last-Translator: Jui  <juipradhan2k@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en\n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1595169846.000000\n"
 
 #: activity/activity.info:2
 msgid "LocoSugar"
-msgstr "LocoSugar"
+msgstr ""
 
 #: game.py:37
 msgid "Move the mouse to the Loco XO."
-msgstr "Move the mouse to the Loco XO."
+msgstr "माउस को लोको में ले जाएं"
 
 #: game.py:38
 msgid "Click on the Loco XO with the left button."
-msgstr "Click on the Loco XO with the left button."
+msgstr "बाएं बटन के साथ लोको XO पर क्लिक करें।"
 
 #: game.py:39
 msgid "Click on the Loco XOs with the left button."
-msgstr "Click on the Loco XOs with the left button."
+msgstr "बाएं बटन के साथ लोको XO पर क्लिक करें।"
 
 #: game.py:40
 msgid "Click and drag the Loco XOs to the right."
-msgstr "Click and drag the Loco XOs to the right."
+msgstr "लोको XO को क्लिक करें और दाईं ओर खींचें।"
 
 #: game.py:41
 msgid "Type the letter on the Loco XO."
-msgstr "Type the letter on the Loco XO."
+msgstr "लोको XO पर अक्षर टाइप करें।"
 
 #: game.py:42
 msgid "Use the SHIFT key for capital letters."
-msgstr "Use the SHIFT key for capital letters."
+msgstr "कैपिटल अक्षरों के लिए SHIFT कुंजी का उपयोग करें"
 
 #: game.py:43
 msgid "Type the letters on the Loco XO in word order."
-msgstr "Type the letters on the Loco XO in word order."
+msgstr "शब्द क्रम में Loco XO पर अक्षर टाइप करें"
 
 #: game.py:44
 msgid "Press ENTER to confirm."
-msgstr "Press ENTER to confirm."
+msgstr "पुष्टि करने के लिए ENTER दबाएं"
 
 #: game.py:45
 msgid "Press DELETE to delete text."
-msgstr "Press DELETE to delete text."
+msgstr "पाठ हटाने के लिए DELETE दबाएं"
 
 #: game.py:47
 msgid "Hello LocoXO"
-msgstr "Hello LocoXO"
+msgstr "नमस्ते लोकोक्सओ"
 
 #: game.py:47
 msgid "LocoXOs are not real."
-msgstr "LocoXOs are not real."
+msgstr "LocoXOs असली नहीं हैं"

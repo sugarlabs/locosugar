@@ -2,20 +2,22 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-24 12:03-0400\n"
-"PO-Revision-Date: 2012-05-27 06:39+0200\n"
-"Last-Translator: Chris <cjl@laptop.org>\n"
+"PO-Revision-Date: 2018-09-05 19:20+0000\n"
+"Last-Translator: Paulo Francisco <slomp@ufrgs.br>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.0.5\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1536175220.000000\n"
 
 #: activity/activity.info:2
 msgid "LocoSugar"
@@ -23,44 +25,45 @@ msgstr "LocoSugar"
 
 #: game.py:37
 msgid "Move the mouse to the Loco XO."
-msgstr "Move the mouse to the Loco XO."
+msgstr "Mova o mouse para o Loco XO."
 
 #: game.py:38
 msgid "Click on the Loco XO with the left button."
-msgstr "Click on the Loco XO with the left button."
+msgstr "Clique no Loco XO com o botão esquerdo."
 
 #: game.py:39
 msgid "Click on the Loco XOs with the left button."
-msgstr "Click on the Loco XOs with the left button."
+msgstr "Clique em Loco XOs com o botão esquerdo."
 
 #: game.py:40
 msgid "Click and drag the Loco XOs to the right."
-msgstr "Click and drag the Loco XOs to the right."
+msgstr "Clique e arraste o Loco XOs para a direita."
 
+# Would that be a letter as an specific character/symbol or as a message? 
 #: game.py:41
 msgid "Type the letter on the Loco XO."
-msgstr "Type the letter on the Loco XO."
+msgstr "Digite a letra no Loco XO."
 
 #: game.py:42
 msgid "Use the SHIFT key for capital letters."
-msgstr "Use the SHIFT key for capital letters."
+msgstr "Use a tecla SHIFT para letras maiúsculas."
 
 #: game.py:43
 msgid "Type the letters on the Loco XO in word order."
-msgstr "Type the letters on the Loco XO in word order."
+msgstr "Digite as letras no Loco XO na ordem correta."
 
 #: game.py:44
 msgid "Press ENTER to confirm."
-msgstr "Press ENTER to confirm."
+msgstr "Pressione ENTER para confirmar."
 
 #: game.py:45
 msgid "Press DELETE to delete text."
-msgstr "Press DELETE to delete text."
+msgstr "Pressione EXCLUIR para apagar o texto."
 
 #: game.py:47
 msgid "Hello LocoXO"
-msgstr "Hello LocoXO"
+msgstr "Olá LocoXO"
 
 #: game.py:47
 msgid "LocoXOs are not real."
-msgstr "LocoXOs are not real."
+msgstr "LocoXOs não são reais."
