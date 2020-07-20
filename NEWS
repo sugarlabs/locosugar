@@ -1,3 +1,21 @@
+12
+
+* Regenerate POT file (Jui Pradhan),
+* Added translations (Leonard, Jui Pradhan),
+* Fix the scaling factor for display resolution (Jui Pradhan),
+* Fix Fullscreen issue (Saumya Mishra),
+* Fix Screen resolution (Saumya Mishra),
+* Fix Warning errorneous pipeline (Saumya Mishra),
+* Port to python3 (Saumya Mishra),
+* Port from GObject to GLib (Saumya Mishra),
+* Deanglify links to help.sugarlabs.org (James Cameron),
+* Remove unused GTK+2 code (Muhammad Zeeshan Qazi),
+* Fix gst-launch-1.0 spelling (Muhammad Zeeshan Qazi),
+* Added and updated README (rdrsadhu, James Cameron),
+* Remove unused imports and minor flake8 fixes (Rahul Bothra, Saumya Mishra),
+* Added screenshots (Walter Bender),
+* change activity metadata (Walter Bender, Vipul Gupta)
+
 11
 
 * New translations
