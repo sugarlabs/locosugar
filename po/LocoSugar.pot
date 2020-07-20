@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-24 12:03-0400\n"
+"POT-Creation-Date: 2020-07-20 09:11+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,46 +21,50 @@ msgstr ""
 msgid "LocoSugar"
 msgstr ""
 
-#: game.py:37
+#: activity/activity.info:3
+msgid "Learn how to use the mouse and keyboard."
+msgstr ""
+
+#: game.py:33
 msgid "Move the mouse to the Loco XO."
 msgstr ""
 
-#: game.py:38
+#: game.py:34
 msgid "Click on the Loco XO with the left button."
 msgstr ""
 
-#: game.py:39
+#: game.py:35
 msgid "Click on the Loco XOs with the left button."
 msgstr ""
 
-#: game.py:40
+#: game.py:36
 msgid "Click and drag the Loco XOs to the right."
 msgstr ""
 
-#: game.py:41
+#: game.py:37
 msgid "Type the letter on the Loco XO."
 msgstr ""
 
-#: game.py:42
+#: game.py:38
 msgid "Use the SHIFT key for capital letters."
 msgstr ""
 
-#: game.py:43
+#: game.py:39
 msgid "Type the letters on the Loco XO in word order."
 msgstr ""
 
-#: game.py:44
+#: game.py:40
 msgid "Press ENTER to confirm."
 msgstr ""
 
-#: game.py:45
+#: game.py:41
 msgid "Press DELETE to delete text."
 msgstr ""
 
-#: game.py:47
+#: game.py:44
 msgid "Hello LocoXO"
 msgstr ""
 
-#: game.py:47
+#: game.py:44
 msgid "LocoXOs are not real."
 msgstr ""
