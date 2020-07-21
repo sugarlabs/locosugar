@@ -10,7 +10,7 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 import gi
-gi.require_version('Gtk','3.0')
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 import os
 import glob
@@ -59,12 +59,12 @@ DEAD_DICTS = [{'A': 'À', 'E': 'È', 'I': 'Ì', 'O': 'Ò', 'U': 'Ù',
               {'A': 'Á', 'E': 'É', 'I': 'Í', 'O': 'Ó', 'U': 'Ú',
                'a': 'á', 'e': 'é', 'i': 'í', 'o': 'ó', 'u': 'ú'},
               {'A': 'Â', 'E': 'Ê', 'I': 'Î', 'O': 'Ô', 'U': 'Û',
-               'a': 'Â',  'e': 'ê', 'i': 'î', 'o': 'ô', 'u': 'û'},
+               'a': 'Â', 'e': 'ê', 'i': 'î', 'o': 'ô', 'u': 'û'},
               {'A': 'Ä', 'O': 'Õ', 'N': 'Ñ', 'U': 'Ũ',
                'a': 'ä', 'o': 'õ', 'n': 'ñ', 'u': 'ũ'},
               {'A': 'Ã', 'E': 'Ë', 'I': 'Ï', 'O': 'Ö', 'U': 'Ü',
                'a': 'ã', 'e': 'ë', 'i': 'ï', 'o': 'ö', 'u': 'ü'},
-              {'A': 'Å', 'a':  'å'}]
+              {'A': 'Å', 'a': 'å'}]
 
 
 class Game():
@@ -119,8 +119,11 @@ class Game():
                     'background2.jpg']
         self._backgrounds = []
         for bg in self._BG:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(self._path, 'images', bg))
-            pixbuf = pixbuf.scale_simple(self._width, self._height, GdkPixbuf.InterpType.BILINEAR)
+            pixbuf = \
+                GdkPixbuf.Pixbuf.new_from_file(os.path.join(self._path,
+                                                            'images', bg))
+            pixbuf = pixbuf.scale_simple(self._width, self._height,
+                                         GdkPixbuf.InterpType.BILINEAR)
             self._backgrounds.append(Sprite(
                 self._sprites, 0, 0, pixbuf))
             self._backgrounds[-1].type = 'background'
@@ -137,7 +140,7 @@ class Game():
         self._panel.hide()
 
         self._LOCOS = glob.glob(
-                os.path.join(self._path, 'images', 'loco*.png'))
+            os.path.join(self._path, 'images', 'loco*.png'))
         self._loco_cards = []
         for loco in self._LOCOS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -147,7 +150,7 @@ class Game():
         self._loco_dim = (int(150 * self._scale_x), int(208 * self._scale_y))
 
         self._MEN = glob.glob(
-                os.path.join(self._path, 'images', 'man*.png'))
+            os.path.join(self._path, 'images', 'man*.png'))
         self._man_cards = []
         for loco in self._MEN:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -156,7 +159,7 @@ class Game():
             self._man_cards[-1].type = 'loco'
 
         self._TAUNTS = glob.glob(
-                os.path.join(self._path, 'images', 'taunt*.png'))
+            os.path.join(self._path, 'images', 'taunt*.png'))
         self._taunt_cards = []
         for loco in self._TAUNTS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -165,7 +168,7 @@ class Game():
             self._taunt_cards[-1].type = 'loco'
 
         self._GHOSTS = glob.glob(
-                os.path.join(self._path, 'images', 'ghost*.png'))
+            os.path.join(self._path, 'images', 'ghost*.png'))
         self._ghost_cards = []
         for loco in self._GHOSTS:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -178,8 +181,10 @@ class Game():
             self._LOCOS[0], int(150 * self._scale_x), int(208 * self._scale_y))
         self._man_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self._MEN[0], int(150 * self._scale_x), int(208 * self._scale_y))
-        self._ghost_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._GHOSTS[0], int(150 * self._scale_x), int(208 * self._scale_y))
+        self._ghost_pixbuf = \
+            GdkPixbuf.Pixbuf.new_from_file_at_size(self._GHOSTS[0],
+                                                   int(150 * self._scale_x),
+                                                   int(208 * self._scale_y))
         for i in range(len(MSGS[1])):  # Check re i18n
             self._sticky_cards.append(Sprite(self._sprites, 0, 0,
                                              self._loco_pixbuf))
@@ -233,7 +238,7 @@ class Game():
         self.score = 0
         self._parent.fullscreen()
         aplay.play(os.path.join(
-                self._path, 'sounds', 'sonar.ogg'))
+            self._path, 'sounds', 'sonar.ogg'))
         GLib.timeout_add(5000, self.new_game, True)
 
     def new_game(self, first_time):
@@ -261,7 +266,7 @@ class Game():
             self._panel.set_label(LABELS[self.level])
             self._panel.set_layer(PANEL_LAYER)
             aplay.play(os.path.join(
-                    self._path, 'sounds', 'drip.ogg'))
+                self._path, 'sounds', 'drip.ogg'))
             self._timer_reset()
 
         if self.level == 0:
@@ -270,15 +275,15 @@ class Game():
             self._loco_quadrant %= 4
             x, y = self._quad_to_xy(self._loco_quadrant)
             aplay.play(os.path.join(
-                    self._path, 'sounds', 'bark.ogg'))
+                self._path, 'sounds', 'bark.ogg'))
             self._loco_cards[0].move((x, y))
             self._loco_pos = (x, y)
         elif self.level == 1:
             aplay.play(os.path.join(
-                    self._path, 'sounds', 'glass.ogg'))
+                self._path, 'sounds', 'glass.ogg'))
         elif self.level == 2:
             aplay.play(os.path.join(
-                    self._path, 'sounds', 'glass.ogg'))
+                self._path, 'sounds', 'glass.ogg'))
             # Place some Locos on the canvas
             for i in range(self._counter + 1):
                 self._loco_quadrant += int(uniform(1, 4))
@@ -289,7 +294,7 @@ class Game():
                 self._sticky_cards[i].set_layer(LOCO_LAYER)
         elif self.level == 3:
             aplay.play(os.path.join(
-                    self._path, 'sounds', 'bark.ogg'))
+                self._path, 'sounds', 'bark.ogg'))
             # Place some Locos on the left-side of the canvas
             for i in range(self._counter + 1):
                 self._loco_quadrant = int(uniform(2, 4))
@@ -348,7 +353,8 @@ class Game():
         x = int(max(0, (self._width / 2.) * uniform(0, 1) - self._loco_dim[0]))
         if q in [0, 1]:
             x += int(self._width / 2.)
-        y = int(max(0, (self._height / 2.) * uniform(0, 1) - self._loco_dim[1]))
+        y = int(max(0,
+                    (self._height / 2.) * uniform(0, 1) - self._loco_dim[1]))
         if q in [1, 2]:
             y += int(self._height / 2.)
         return x, y
@@ -459,7 +465,7 @@ class Game():
                 self._panel.set_layer(PANEL_LAYER)
                 self._waiting_for_delete = True
                 aplay.play(os.path.join(
-                        self._path, 'sounds', 'glass.ogg'))
+                    self._path, 'sounds', 'glass.ogg'))
         else:
             for i in range(n):
                 if self._sticky_cards[i].labels[0] == k:
@@ -470,7 +476,7 @@ class Game():
         # Test for end condition
         if self.level == 6 and \
            self._correct == len(MSGS[self._counter]) - \
-                            MSGS[self._counter].count(' '):
+           MSGS[self._counter].count(' '):
             c = 0
             for i in range(len(MSGS[self._counter])):
                 if MSGS[self._counter][i] == ' ':
@@ -482,7 +488,7 @@ class Game():
             self._panel.set_layer(PANEL_LAYER)
             self._waiting_for_enter = True
             aplay.play(os.path.join(
-                    self._path, 'sounds', 'drip.ogg'))
+                self._path, 'sounds', 'drip.ogg'))
             return
         else:
             for i in range(n):
@@ -601,7 +607,7 @@ class Game():
         # Restrict Cairo to the exposed area
         cr = self._canvas.window.cairo_create()
         cr.rectangle(event.area.x, event.area.y,
-                event.area.width, event.area.height)
+                     event.area.width, event.area.height)
         cr.clip()
         # Refresh sprite list
         self._sprites.redraw_sprites(cr=cr)
