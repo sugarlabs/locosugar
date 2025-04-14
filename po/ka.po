@@ -8,17 +8,20 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-20 09:11+0530\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-04-14 13:22+0000\n"
+"Last-Translator: NF <rkavt@smartprojects.ge>\n"
+"Language-Team: Georgian <http://weblate.sugarlabs.org/projects/"
+"sugar-activities/locosugar/ka/>\n"
 "Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.4.2\n"
 
 #: activity/activity.info:2
 msgid "LocoSugar"
-msgstr ""
+msgstr "LocoSugar"
 
 #: activity/activity.info:3
 msgid "Learn how to use the mouse and keyboard."
@@ -26,44 +29,44 @@ msgstr ""
 
 #: game.py:33
 msgid "Move the mouse to the Loco XO."
-msgstr ""
+msgstr "გადაიტანეთ თაგუნა Loco XO-ზე."
 
 #: game.py:34
 msgid "Click on the Loco XO with the left button."
-msgstr ""
+msgstr "დააწკაპუნეთ Loco XO-ზე მარცხენა ღილაკით."
 
 #: game.py:35
 msgid "Click on the Loco XOs with the left button."
-msgstr ""
+msgstr "დააწკაპუნეთ Loco XO-ებზე მარცხენა ღილაკით."
 
 #: game.py:36
 msgid "Click and drag the Loco XOs to the right."
-msgstr ""
+msgstr "დააწკაპუნეთ და გადაათრიეთ Loco XO-ები მარჯვნივ."
 
 #: game.py:37
 msgid "Type the letter on the Loco XO."
-msgstr ""
+msgstr "აკრიფეთ ასო Loco XO-ზე."
 
 #: game.py:38
 msgid "Use the SHIFT key for capital letters."
-msgstr ""
+msgstr "გამოიყენეთ ღილაკი Shift დიდი ასოებისთვის."
 
 #: game.py:39
 msgid "Type the letters on the Loco XO in word order."
-msgstr ""
+msgstr "აკრიფეთ ასოები Loco XO-ზე სიტყვის მიმდევრობით."
 
 #: game.py:40
 msgid "Press ENTER to confirm."
-msgstr ""
+msgstr "დასადასტურებლად დააჭირეთ ღილაკს Enter."
 
 #: game.py:41
 msgid "Press DELETE to delete text."
-msgstr ""
+msgstr "დააჭირეთ ღილაკს Delete ტექსტის წასაშლელად."
 
 #: game.py:44
 msgid "Hello LocoXO"
-msgstr ""
+msgstr "გამარჯობა, LocoXO"
 
 #: game.py:44
 msgid "LocoXOs are not real."
-msgstr ""
+msgstr "LocoXO-ები ნამდვილი არაა."
